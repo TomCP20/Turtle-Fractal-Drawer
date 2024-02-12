@@ -5,9 +5,9 @@ import math
 from collections.abc import Callable
 from itertools import cycle
 
-def reset(t):
+def reset():
     t.reset()
-    t.screen.bgcolor("black")
+    t.screen.screensize(canvwidth=500, canvheight=500,  bg="black")
     t.hideturtle()
     t.speed(0)
 
@@ -75,7 +75,7 @@ def dragon(level: int) -> str:
         return dragon(level-1) + "R" + invert_commands(dragon(level-1))[::-1]
     
 def dragon_curve(level: int, size: float, rainbow_generator: cycle) -> None:
-    draw_curve_no_f(dragon(level), size/(level*math.sqrt(2)), rainbow_generator)
+    draw_curve_no_f(dragon(level), size/(math.sqrt(2)*(level**math.sqrt(2))), rainbow_generator)
 
 def sierpinski_gasket(level: int, length: float, rainbow_generator: cycle, flipped=1) -> None:
     
@@ -98,14 +98,9 @@ def sierpinski_start(level: int, length: float, rainbow_generator) -> None:
 
 def iterate_curve(curve: Callable[[int, float, cycle], None], max_iterations: int, size: float, col_list: list[str]) -> None:
     for i in range(1, max_iterations+1):
-        print(f"Starting iteration {i}.")
-        reset(t)
-        t.screen.bgcolor("black")
-        t.hideturtle()
-        t.speed(0)
+        reset()
         curve(i, size, cycle(col_list))
         sleep(1)
-    print("Finished iterations.")
 
 curves = {1: koch_snowflake, 2: hilbert_curve, 3: dragon_curve, 4: sierpinski_start}
 curvesno = None
@@ -121,7 +116,7 @@ rainbow = ['red','orange','yellow','green','blue','indigo','violet']
 alt = ["red", "green"]
 
 t = Turtle()
-reset(t)
+reset()
 
 iterate_curve(curve, max_iterations, 500, rainbow)
 
