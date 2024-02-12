@@ -78,6 +78,25 @@ def dragon(level: int) -> str:
 def dragon_curve(level: int, size: float, rainbow_generator: cycle) -> None:
     draw_curve_no_f(dragon(level), size/(level*math.sqrt(2)), rainbow_generator)
 
+def sierpinski_gasket(level: int, length: float, rainbow_generator: cycle, flipped=1) -> None:
+    
+    if level == 1:
+        t.pencolor(next(rainbow_generator))
+        t.forward(length)
+    else:
+        t.left(60*flipped)
+        sierpinski_gasket(level-1, length/2, rainbow_generator, -flipped)
+        t.right(60*flipped)
+        sierpinski_gasket(level-1, length/2, rainbow_generator, flipped)
+        t.right(60*flipped)
+        sierpinski_gasket(level-1, length/2, rainbow_generator, -flipped)
+        t.left(60*flipped)
+
+def sierpinski_start(level: int, length: float, rainbow_generator) -> None:
+    t.teleport(-length/2, -length/3)
+    sierpinski_gasket(level, length, rainbow_generator)
+   
+
 def iterate_curve(curve: Callable[[int, float, cycle], None], max_iterations: int, size: float, col_list: list[str]) -> None:
     for i in range(1, max_iterations+1):
         print(f"Starting iteration {i}.")
@@ -114,7 +133,7 @@ def get_max_iterations():
 
 reset_screen()
 
-curves = {"1": (koch_snowflake, "The Koch Snowflake"), "2": (hilbert_curve, "The Hilbert Curve"), "3": (dragon_curve, "The Dragon Curve")}
+curves = {"1": (koch_snowflake, "The Koch Snowflake"), "2": (hilbert_curve, "The Hilbert Curve"), "3": (dragon_curve, "The Dragon Curve"), "4": (sierpinski_start, "Sierpiński gasket")}
 curve = get_curve(curves)
 
 rainbow = ['red','orange','yellow','green','blue','indigo','violet']
