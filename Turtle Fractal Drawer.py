@@ -1,16 +1,15 @@
 from turtle import Turtle
+from tkinter import simpledialog
 from time import sleep
 import math
 from collections.abc import Callable
 from itertools import cycle
 
-t = Turtle()
-def reset_screen():
+def reset(t):
     t.reset()
     t.screen.bgcolor("black")
     t.hideturtle()
     t.speed(0)
-
 
 def invert_commands(commands: str) -> str:
     swap = {"R": "L", "L": "R", "F": "F"}
@@ -100,47 +99,30 @@ def sierpinski_start(level: int, length: float, rainbow_generator) -> None:
 def iterate_curve(curve: Callable[[int, float, cycle], None], max_iterations: int, size: float, col_list: list[str]) -> None:
     for i in range(1, max_iterations+1):
         print(f"Starting iteration {i}.")
-        reset_screen()
+        reset(t)
+        t.screen.bgcolor("black")
+        t.hideturtle()
+        t.speed(0)
         curve(i, size, cycle(col_list))
         sleep(1)
     print("Finished iterations.")
 
+curves = {1: koch_snowflake, 2: hilbert_curve, 3: dragon_curve, 4: sierpinski_start}
+curvesno = None
+while not curvesno:
+    curvesno = simpledialog.askinteger("Select fractal", "What curve do you want to display?\n1) The Koch Snowflake\n2) The Hilbert Curve\n3) The Dragon Curve\n4) Sierpiński gasket", minvalue=1, maxvalue=4)
+curve = curves[curvesno]
 
-
-def get_curve(curves):
-    while True:
-        print("What curve do you want to display?")
-        for num, (_, name) in curves.items():
-            print(f"{num}) {name}.")
-        no = input()
-        if no in curves:
-            return curves[no][0]
-        else:
-            print(f"Input Error: {no} is not a valid input.")
-
-def get_max_iterations():
-    while True:
-        print("How many iterations of the curve do you want?:")
-        no = input()
-        try:
-            no = int(no)
-            if no > 0:
-                return no
-            else:
-                print(f"Input Error: {no} out of range")
-        except ValueError:
-            print(f"Input Error: {no} is not an int")
-
-reset_screen()
-
-curves = {"1": (koch_snowflake, "The Koch Snowflake"), "2": (hilbert_curve, "The Hilbert Curve"), "3": (dragon_curve, "The Dragon Curve"), "4": (sierpinski_start, "Sierpiński gasket")}
-curve = get_curve(curves)
+max_iterations = None
+while not max_iterations:
+    max_iterations = simpledialog.askinteger("Max iterations", "How many iterations of the curve do you want?", minvalue=1)
 
 rainbow = ['red','orange','yellow','green','blue','indigo','violet']
 alt = ["red", "green"]
 
-max_iterations = get_max_iterations()
+t = Turtle()
+reset(t)
 
 iterate_curve(curve, max_iterations, 500, rainbow)
 
-input("Press enter to quit.")
+t.screen.mainloop()
