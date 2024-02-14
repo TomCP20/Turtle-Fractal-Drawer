@@ -36,7 +36,15 @@ def gen_hilbert(level: int) -> str:
 def hilbert_curve(level: int, curve_size: float, rainbow_generator: cycle) -> None:
     t.teleport(-curve_size/2, -curve_size/2)
     step_length = curve_size/((2**level)-1)
-    draw_curve_has_f(gen_hilbert(level), step_length, rainbow_generator)
+    commands = gen_hilbert(level)
+    for c in commands:
+        if c == "R":
+            t.right(90)
+        elif c == "L":
+            t.left(90)
+        elif c =="F":
+            t.pencolor(next(rainbow_generator))
+            t.forward(step_length)
 
 def gen_dragon(level: int) -> str:
     if level == 1:
@@ -45,7 +53,17 @@ def gen_dragon(level: int) -> str:
         return gen_dragon(level-1) + "R" + invert_commands(gen_dragon(level-1))[::-1]
     
 def dragon_curve(level: int, size: float, rainbow_generator: cycle) -> None:
-    draw_curve_no_f(gen_dragon(level), size/(math.sqrt(2)*(level**math.sqrt(2))), rainbow_generator)
+    commands = gen_dragon(level)
+    step_length = size/(math.sqrt(2)*(level**math.sqrt(2)))
+    t.pencolor(next(rainbow_generator))
+    t.forward(step_length)
+    for c in commands:
+        if c == "R":
+            t.right(90)
+        elif c == "L":
+            t.left(90)
+        t.pencolor(next(rainbow_generator))
+        t.forward(step_length)
 
 def sierpinski_gasket(level: int, length: float, rainbow_generator: cycle, flipped=1) -> None:
     
@@ -102,6 +120,27 @@ def moore_curve(level: int, curve_size: float, rainbow_generator: cycle) -> None
             t.right(90)
         elif c == "-":
             t.left(90)
+
+def gen_peano(level: int) -> str:
+    if level == 1:
+        return "XFYFX+F+YFXFY-F-XFYFX"
+    else:
+        return substitute(gen_peano(level-1), {"X": "XFYFX+F+YFXFY-F-XFYFX", "Y": "YFXFY-F-XFYFX+F+YFXFY"})
+
+def peano_curve(level: int, curve_size: float, rainbow_generator: cycle) -> None:
+    step_length = curve_size/((3**level)-1)
+    t.teleport(-curve_size/2, -curve_size/2)
+    t.left(90)
+    commands = gen_peano(level)
+    for c in commands:
+        if c == "F":
+            t.pencolor(next(rainbow_generator))
+            t.forward(step_length)
+        elif c == "+":
+            t.right(90)
+        elif c == "-":
+            t.left(90)
+
 #utility
 
 def substitute(commands: str, rules: dict[str, str]):
@@ -109,27 +148,6 @@ def substitute(commands: str, rules: dict[str, str]):
 
 def invert_commands(commands: str) -> str:
     return substitute(commands, {"R": "L", "L": "R", "F": "F"})
-
-def draw_curve_has_f(commands: str, step_length: float, rainbow_generator: cycle) -> None:
-    for c in commands:
-        if c == "R":
-            t.right(90)
-        elif c == "L":
-            t.left(90)
-        elif c =="F":
-            t.pencolor(next(rainbow_generator))
-            t.forward(step_length)
-
-def draw_curve_no_f(commands: str, step_length: float, rainbow_generator: cycle) -> None:
-    t.pencolor(next(rainbow_generator))
-    t.forward(step_length)
-    for c in commands:
-        if c == "R":
-            t.right(90)
-        elif c == "L":
-            t.left(90)
-        t.pencolor(next(rainbow_generator))
-        t.forward(step_length)
 
 def iterate_curve(curve: Callable[[int, float, cycle], None], max_iterations: int, size: float, col_list: list[str]) -> None:
     for i in range(1, max_iterations+1):
@@ -146,11 +164,11 @@ def reset():
     t.speed(0)
 
 
-curves = {1: koch_start, 2: hilbert_curve, 3: dragon_curve, 4: sierpinski_start, 5: draw_gosper_curve, 6: moore_curve}
+curves = {1: koch_start, 2: hilbert_curve, 3: dragon_curve, 4: sierpinski_start, 5: draw_gosper_curve, 6: moore_curve, 7: peano_curve}
 curvesno = None
-dialog = "\n".join(["What curve do you want to display?", "1) The Koch Snowflake", "2) The Hilbert Curve", "3) The Dragon Curve", "4) Sierpiński gasket", "5) Gosper curve", "6) Moore curve"])
+dialog = "\n".join(["What curve do you want to display?", "1) The Koch Snowflake", "2) The Hilbert Curve", "3) The Dragon Curve", "4) Sierpiński gasket", "5) Gosper curve", "6) Moore curve", "7) Peano curve"])
 while not curvesno:
-    curvesno = simpledialog.askinteger("Select fractal", dialog, minvalue=1, maxvalue=6)
+    curvesno = simpledialog.askinteger("Select fractal", dialog, minvalue=1, maxvalue=7)
 curve = curves[curvesno]
 
 max_iterations = None
