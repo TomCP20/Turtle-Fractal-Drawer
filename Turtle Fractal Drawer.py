@@ -9,18 +9,17 @@ import sys
 #fractal
 
 def koch_snowflake(level: int, length: float, rainbow_generator: cycle) -> None:
-    
-    if level == 1:
-        t.pencolor(next(rainbow_generator))
-        t.forward(length)
-    else:
-        koch_snowflake(level-1, length/3, rainbow_generator)
-        t.left(60)
-        koch_snowflake(level-1, length/3, rainbow_generator)
-        t.right(120)
-        koch_snowflake(level-1, length/3, rainbow_generator)
-        t.left(60)
-        koch_snowflake(level-1, length/3, rainbow_generator)
+    step_length = length/(3**(level-1))
+    commands = l_system(level, "F", {"F": "F+F--F+F"})
+    for c in commands:
+        if c == "F":
+            t.pencolor(next(rainbow_generator))
+            t.forward(step_length)
+        elif c == "-":
+            t.right(60)
+        elif c == "+":
+            t.left(60)
+
 
 def koch_start(level: int, length: float, rainbow_generator: cycle) -> None:
     t.teleport(-length/2, length/3)
