@@ -27,46 +27,33 @@ def koch_start(level: int, length: float, rainbow_generator: cycle) -> None:
         koch_snowflake(level, length, rainbow_generator)
         t.right(120)
 
-def gen_hilbert(level: int) -> str:
-    if level == 0:
-        return ""
-    else:
-        return "L" + invert_commands(gen_hilbert(level-1)) + "FR" + gen_hilbert(level-1) + "F" + gen_hilbert(level-1) + "RF" + invert_commands(gen_hilbert(level-1)) + "L"
-
 def hilbert_curve(level: int, curve_size: float, rainbow_generator: cycle) -> None:
     t.teleport(-curve_size/2, -curve_size/2)
     step_length = curve_size/((2**level)-1)
-    commands = gen_hilbert(level)
+    commands = l_system(level, "+BF-AFA-FB+", {"A": "+BF-AFA-FB+", "B": "-AF+BFB+FA-"})
     for c in commands:
-        if c == "R":
+        if c == "-":
             t.right(90)
-        elif c == "L":
+        elif c == "+":
             t.left(90)
         elif c =="F":
             t.pencolor(next(rainbow_generator))
             t.forward(step_length)
-
-def gen_dragon(level: int) -> str:
-    if level == 1:
-        return "R"
-    else:
-        return gen_dragon(level-1) + "R" + invert_commands(gen_dragon(level-1))[::-1]
     
 def dragon_curve(level: int, size: float, rainbow_generator: cycle) -> None:
-    commands = gen_dragon(level)
+    
     step_length = size/(math.sqrt(2)*(level**math.sqrt(2)))
-    t.pencolor(next(rainbow_generator))
-    t.forward(step_length)
+    commands = l_system(level, "F", {"F": "F+G", "G": "F-G"})
     for c in commands:
-        if c == "R":
+        if c == "-":
             t.right(90)
-        elif c == "L":
+        elif c == "+":
             t.left(90)
-        t.pencolor(next(rainbow_generator))
-        t.forward(step_length)
+        elif c == "F" or c == "G":
+            t.pencolor(next(rainbow_generator))
+            t.forward(step_length)
 
 def sierpinski_gasket(level: int, length: float, rainbow_generator: cycle, flipped=1) -> None:
-    
     if level == 1:
         t.pencolor(next(rainbow_generator))
         t.forward(length)
@@ -83,14 +70,9 @@ def sierpinski_start(level: int, length: float, rainbow_generator) -> None:
     t.teleport(-length/2, -length/3)
     sierpinski_gasket(level, length, rainbow_generator)
 
-def gen_gosper(level: int) -> str:
-    if level == 1:
-        return "A"
-    return substitute(gen_gosper(level-1), {"A": "A-B--B+A++AA+B-", "B": "+A-BB--B-A++A+B"})
-
 def draw_gosper_curve(level: int, size: float, rainbow_generator: cycle) -> None:
     t.teleport(0, size/4)
-    commands = gen_gosper(level)
+    commands = l_system(level, "A", {"A": "A-B--B+A++AA+B-", "B": "+A-BB--B-A++A+B"})
     step = size/math.sqrt(7)**(level)
     for c in commands:
         if c == "A" or c == "B":
@@ -101,17 +83,11 @@ def draw_gosper_curve(level: int, size: float, rainbow_generator: cycle) -> None
         elif c == "-":
             t.right(60)
 
-def gen_moore(level: int) -> str:
-    if level == 1:
-        return "LFL+F+LFL"
-    else:
-        return substitute(gen_moore(level-1), {"L": "-RF+LFL+FR-", "R": "+LF-RFR-FL+"})
-
 def moore_curve(level: int, curve_size: float, rainbow_generator: cycle) -> None:
     step_length = curve_size/((2**level)-1)
     t.teleport(-step_length/2, -curve_size/2)
     t.left(90)
-    commands = gen_moore(level)
+    commands = l_system(level, "LFL+F+LFL", {"L": "-RF+LFL+FR-", "R": "+LF-RFR-FL+"})
     for c in commands:
         if c == "F":
             t.pencolor(next(rainbow_generator))
@@ -121,17 +97,11 @@ def moore_curve(level: int, curve_size: float, rainbow_generator: cycle) -> None
         elif c == "-":
             t.left(90)
 
-def gen_peano(level: int) -> str:
-    if level == 1:
-        return "XFYFX+F+YFXFY-F-XFYFX"
-    else:
-        return substitute(gen_peano(level-1), {"X": "XFYFX+F+YFXFY-F-XFYFX", "Y": "YFXFY-F-XFYFX+F+YFXFY"})
-
 def peano_curve(level: int, curve_size: float, rainbow_generator: cycle) -> None:
     step_length = curve_size/((3**level)-1)
     t.teleport(-curve_size/2, -curve_size/2)
     t.left(90)
-    commands = gen_peano(level)
+    commands = l_system(level, "XFYFX+F+YFXFY-F-XFYFX", {"X": "XFYFX+F+YFXFY-F-XFYFX", "Y": "YFXFY-F-XFYFX+F+YFXFY"})
     for c in commands:
         if c == "F":
             t.pencolor(next(rainbow_generator))
@@ -146,8 +116,11 @@ def peano_curve(level: int, curve_size: float, rainbow_generator: cycle) -> None
 def substitute(commands: str, rules: dict[str, str]):
     return "".join(rules[c] if c in rules else c for c in commands)
 
-def invert_commands(commands: str) -> str:
-    return substitute(commands, {"R": "L", "L": "R", "F": "F"})
+def l_system(level: int, axiom: str, rules: dict[str, str]) -> str:
+    if level == 1:
+        return axiom
+    else:
+        return substitute(l_system(level-1, axiom, rules), rules)
 
 def iterate_curve(curve: Callable[[int, float, cycle], None], max_iterations: int, size: float, col_list: list[str]) -> None:
     for i in range(1, max_iterations+1):
@@ -164,12 +137,19 @@ def reset():
     t.speed(0)
 
 
-curves = {1: koch_start, 2: hilbert_curve, 3: dragon_curve, 4: sierpinski_start, 5: draw_gosper_curve, 6: moore_curve, 7: peano_curve}
+curves = {
+    1: (koch_start, "The Koch Snowflake"), 
+    2: (hilbert_curve, "The Hilbert Curve"), 
+    3: (dragon_curve, "The Dragon Curve"), 
+    4: (sierpinski_start, "The Sierpiński gasket"), 
+    5: (draw_gosper_curve, "The Gosper curve"), 
+    6: (moore_curve, "The Moore curve"), 
+    7: (peano_curve, "The Peano curve")}
 curvesno = None
-dialog = "\n".join(["What curve do you want to display?", "1) The Koch Snowflake", "2) The Hilbert Curve", "3) The Dragon Curve", "4) Sierpiński gasket", "5) Gosper curve", "6) Moore curve", "7) Peano curve"])
+dialog = "\n".join(["What curve do you want to display?"] + [f"{k}) {v[1]}" for k, v in curves.items()])
 while not curvesno:
-    curvesno = simpledialog.askinteger("Select fractal", dialog, minvalue=1, maxvalue=7)
-curve = curves[curvesno]
+    curvesno = simpledialog.askinteger("Select fractal", dialog, minvalue=1, maxvalue=max(curves))
+curve = curves[curvesno][0]
 
 max_iterations = None
 while not max_iterations:
