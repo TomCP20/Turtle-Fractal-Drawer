@@ -4,6 +4,7 @@ from time import sleep
 import math
 from collections.abc import Callable
 from itertools import cycle
+import sys
 
 #fractal
 
@@ -145,15 +146,16 @@ curves = {
     5: (draw_gosper_curve, "The Gosper curve"), 
     6: (moore_curve, "The Moore curve"), 
     7: (peano_curve, "The Peano curve")}
-curvesno = None
 dialog = "\n".join(["What curve do you want to display?"] + [f"{k}) {v[1]}" for k, v in curves.items()])
-while not curvesno:
-    curvesno = simpledialog.askinteger("Select fractal", dialog, minvalue=1, maxvalue=max(curves))
+curvesno = simpledialog.askinteger("Select fractal", dialog, minvalue=1, maxvalue=max(curves))
+if not curvesno:
+    sys.exit()
 curve = curves[curvesno][0]
 
-max_iterations = None
-while not max_iterations:
-    max_iterations = simpledialog.askinteger("Max iterations", "How many iterations of the curve do you want?", minvalue=1)
+max_iterations = simpledialog.askinteger("Max iterations", "How many iterations of the curve do you want?", minvalue=1)
+
+if not max_iterations:
+    sys.exit()
 
 rainbow = ['red','orange','yellow','green','blue','indigo','violet']
 alt = ["red", "green"]
