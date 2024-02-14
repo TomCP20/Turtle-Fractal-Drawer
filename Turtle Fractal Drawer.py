@@ -53,21 +53,23 @@ def dragon_curve(level: int, size: float, rainbow_generator: cycle) -> None:
             t.pencolor(next(rainbow_generator))
             t.forward(step_length)
 
-def sierpinski_gasket(level: int, length: float, rainbow_generator: cycle, flipped=1) -> None:
-    if level == 1:
-        t.pencolor(next(rainbow_generator))
-        t.forward(length)
-    else:
-        t.left(60*flipped)
-        sierpinski_gasket(level-1, length/2, rainbow_generator, -flipped)
-        t.right(60*flipped)
-        sierpinski_gasket(level-1, length/2, rainbow_generator, flipped)
-        t.right(60*flipped)
-        sierpinski_gasket(level-1, length/2, rainbow_generator, -flipped)
-        t.left(60*flipped)
+def sierpinski_gasket(level: int, length: float, rainbow_generator: cycle) -> None:
+    step_length = length/(2**(level-1))
+    commands = l_system(level, "XF", {"X": "YF+XF+Y", "Y": " XF-YF-X"})
+    for c in commands:
+        if c == "-":
+            t.right(60)
+        elif c == "+":
+            t.left(60)
+        elif c == "F":
+            t.pencolor(next(rainbow_generator))
+            t.forward(step_length)
 
 def sierpinski_start(level: int, length: float, rainbow_generator) -> None:
-    t.teleport(-length/2, -length/3)
+    t.teleport(length/2, -length/3)
+    t.left(120)
+    if level % 2 == 1:
+        t.left(60)
     sierpinski_gasket(level, length, rainbow_generator)
 
 def draw_gosper_curve(level: int, size: float, rainbow_generator: cycle) -> None:
