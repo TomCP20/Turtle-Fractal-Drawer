@@ -75,19 +75,33 @@ def draw_gosper_curve(level: int, size: float, rainbow_generator: cycle) -> None
     commands = gen_gosper(level)
     step = size/math.sqrt(7)**(level)
     for c in commands:
-        t.pencolor(next(rainbow_generator))
         if c == "A" or c == "B":
+            t.pencolor(next(rainbow_generator))
             t.forward(step)
         elif c == "+":
             t.left(60)
         elif c == "-":
             t.right(60)
 
-# 0 2 8 24
-#  2 6 16
-#   4 10
-#    6
+def gen_moore(level: int) -> str:
+    if level == 1:
+        return "LFL+F+LFL"
+    else:
+        return substitute(gen_moore(level-1), {"L": "-RF+LFL+FR-", "R": "+LF-RFR-FL+"})
 
+def moore_curve(level: int, curve_size: float, rainbow_generator: cycle) -> None:
+    step_length = curve_size/((2**level)-1)
+    t.teleport(-step_length/2, -curve_size/2)
+    t.left(90)
+    commands = gen_moore(level)
+    for c in commands:
+        if c == "F":
+            t.pencolor(next(rainbow_generator))
+            t.forward(step_length)
+        elif c == "+":
+            t.right(90)
+        elif c == "-":
+            t.left(90)
 #utility
 
 def substitute(commands: str, rules: dict[str, str]):
@@ -132,10 +146,11 @@ def reset():
     t.speed(0)
 
 
-curves = {1: koch_start, 2: hilbert_curve, 3: dragon_curve, 4: sierpinski_start, 5: draw_gosper_curve}
+curves = {1: koch_start, 2: hilbert_curve, 3: dragon_curve, 4: sierpinski_start, 5: draw_gosper_curve, 6: moore_curve}
 curvesno = None
+dialog = "\n".join(["What curve do you want to display?", "1) The Koch Snowflake", "2) The Hilbert Curve", "3) The Dragon Curve", "4) Sierpiński gasket", "5) Gosper curve", "6) Moore curve"])
 while not curvesno:
-    curvesno = simpledialog.askinteger("Select fractal", "What curve do you want to display?\n1) The Koch Snowflake\n2) The Hilbert Curve\n3) The Dragon Curve\n4) Sierpiński gasket\n5) Gosper curve", minvalue=1, maxvalue=5)
+    curvesno = simpledialog.askinteger("Select fractal", dialog, minvalue=1, maxvalue=6)
 curve = curves[curvesno]
 
 max_iterations = None
