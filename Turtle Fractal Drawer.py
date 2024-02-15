@@ -102,23 +102,23 @@ def reset(t: Turtle):
     t.speed(0)
 
 def main():
-    curves = {
-        1: (koch_snowflake, "The Koch Snowflake"),
-        2: (quadratic_koch_curve, "The Quadratic Koch curve"),
-        3: (hilbert_curve, "The Hilbert Curve"), 
-        4: (dragon_curve, "The Dragon Curve"), 
-        5: (sierpinski_triangle, "The Sierpiński triangle"),
-        6: (sierpinski_arrowhead_curve, "The Sierpiński arrowhead curve"), 
-        7: (draw_gosper_curve, "The Gosper curve"), 
-        8: (moore_curve, "The Moore curve"), 
-        9: (peano_curve, "The Peano curve")}
-    dialog = "\n".join(["What curve do you want to display?"] + [f"{k}) {v[1]}" for k, v in curves.items()])
+    curves = [
+        (koch_snowflake, "The Koch Snowflake"),
+        (quadratic_koch_curve, "The Quadratic Koch curve"),
+        (hilbert_curve, "The Hilbert Curve"), 
+        (dragon_curve, "The Dragon Curve"), 
+        (sierpinski_triangle, "The Sierpiński triangle"),
+        (sierpinski_arrowhead_curve, "The Sierpiński arrowhead curve"), 
+        (draw_gosper_curve, "The Gosper curve"), 
+        (moore_curve, "The Moore curve"), 
+        (peano_curve, "The Peano curve")]
+    dialog = "\n".join(["What curve do you want to display?"] + [f"{i}) {v[1]}" for i, v in enumerate(curves, 1)])
 
     
-    curvesno = simpledialog.askinteger("Select fractal", dialog, minvalue=1, maxvalue=max(curves))
+    curvesno = simpledialog.askinteger("Select fractal", dialog, minvalue=1, maxvalue=len(curves))
     if not curvesno:
         return
-    curve = curves[curvesno][0]
+    curve = curves[curvesno-1][0]
 
     max_iterations = simpledialog.askinteger("Max iterations", "How many iterations of the curve do you want?", minvalue=1)
     if not max_iterations:
