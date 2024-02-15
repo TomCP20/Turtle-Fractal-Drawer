@@ -100,7 +100,7 @@ def main():
         7: (peano_curve, "The Peano curve")}
     dialog = "\n".join(["What curve do you want to display?"] + [f"{k}) {v[1]}" for k, v in curves.items()])
 
-    rainbow = ['red','orange','yellow','green','blue','indigo','violet']
+    
     curvesno = simpledialog.askinteger("Select fractal", dialog, minvalue=1, maxvalue=max(curves))
     if not curvesno:
         return
@@ -110,6 +110,7 @@ def main():
     if not max_iterations:
         return
 
+    rainbow = ['red','orange','yellow','green','blue','indigo','violet']
     t = Turtle()
     reset(t)
 
