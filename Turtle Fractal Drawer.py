@@ -25,12 +25,18 @@ def dragon_curve(level: int, size: float, rainbow_generator: cycle, t: Turtle) -
     commands = l_system(level, "F", {"F": "F-G", "G": "F+G"})
     draw_l(commands, "FG", 90, rainbow_generator, step_length, t)
 
-def sierpinski_gasket(level: int, length: float, rainbow_generator: cycle, t: Turtle) -> None:
+def sierpinski_curve(level: int, length: float, rainbow_generator: cycle, t: Turtle) -> None:
+    t.teleport(-length/2, -length/3)
+    step_length = length/(2**(level-1))
+    commands = l_system(level, "F-G-G", {"F": "F-G+F+G-F", "G": "GG"})
+    draw_l(commands, "FG", 120, rainbow_generator, step_length, t)
+
+def sierpinski_arrowhead_curve(level: int, length: float, rainbow_generator: cycle, t: Turtle) -> None:
     t.teleport(-length/2, -length/3)
     if level % 2 == 0:
         t.left(60)
     step_length = length/(2**(level-1))
-    commands = l_system(level, "XF", {"X": "YF+XF+Y", "Y": " XF-YF-X"})
+    commands = l_system(level, "XF", {"X": "YF+XF+Y", "Y": "XF-YF-X"})
     draw_l(commands, "F", 60, rainbow_generator, step_length, t)
 
 def draw_gosper_curve(level: int, size: float, rainbow_generator: cycle, t: Turtle) -> None:
@@ -94,10 +100,11 @@ def main():
         1: (koch_snowflake, "The Koch Snowflake"), 
         2: (hilbert_curve, "The Hilbert Curve"), 
         3: (dragon_curve, "The Dragon Curve"), 
-        4: (sierpinski_gasket, "The Sierpiński gasket"), 
-        5: (draw_gosper_curve, "The Gosper curve"), 
-        6: (moore_curve, "The Moore curve"), 
-        7: (peano_curve, "The Peano curve")}
+        4: (sierpinski_curve, "The Sierpiński triangle"),
+        5: (sierpinski_arrowhead_curve, "The Sierpiński arrowhead curve"), 
+        6: (draw_gosper_curve, "The Gosper curve"), 
+        7: (moore_curve, "The Moore curve"), 
+        8: (peano_curve, "The Peano curve")}
     dialog = "\n".join(["What curve do you want to display?"] + [f"{k}) {v[1]}" for k, v in curves.items()])
 
     
