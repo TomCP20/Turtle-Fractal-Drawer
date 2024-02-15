@@ -37,6 +37,13 @@ def sierpinski_triangle(level: int, length: float, rainbow_generator: cycle, t: 
     commands = l_system_gen(level, "F-G-G", {"F": "F-G+F+G-F", "G": "GG"})
     l_system_draw(commands, "FG", 120, rainbow_generator, step_length, t)
 
+def sierpinski_curve(level: int, length: float, rainbow_generator: cycle, t: Turtle) -> None:
+    step_length = length/(2**(level)+2**(level+1/2)-1-2*math.sqrt(2))# fix me
+    t.teleport(-step_length/2, length/2)
+    
+    commands = l_system_gen(level, " F++XF++F++XF", {"X": "XF-G-XF++F++XF-G-X"})
+    l_system_draw(commands, "FG", 45, rainbow_generator, step_length, t)
+
 def sierpinski_arrowhead_curve(level: int, length: float, rainbow_generator: cycle, t: Turtle) -> None:
     t.teleport(-length/2, -length/3)
     if level % 2 == 0:
@@ -108,6 +115,7 @@ def main():
         (hilbert_curve, "The Hilbert Curve"), 
         (dragon_curve, "The Dragon Curve"), 
         (sierpinski_triangle, "The Sierpiński triangle"),
+        (sierpinski_curve, "The Sierpiński curve"),
         (sierpinski_arrowhead_curve, "The Sierpiński arrowhead curve"), 
         (draw_gosper_curve, "The Gosper curve"), 
         (moore_curve, "The Moore curve"), 
