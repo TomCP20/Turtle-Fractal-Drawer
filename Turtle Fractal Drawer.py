@@ -11,10 +11,8 @@ import sys
 def koch_snowflake(level: int, length: float, rainbow_generator: cycle) -> None:
     t.teleport(-length/2, length/3)
     step_length = length/(3**(level-1))
-    commands = l_system(level, "F", {"F": "F-F++F-F"})
-    for _ in range(3):
-        draw_l(commands, "F", 60, rainbow_generator, step_length)
-        t.right(120)
+    commands = l_system(level, "F++F++F++", {"F": "F-F++F-F"})
+    draw_l(commands, "F", 60, rainbow_generator, step_length)
 
 def hilbert_curve(level: int, curve_size: float, rainbow_generator: cycle) -> None:
     t.teleport(-curve_size/2, -curve_size/2)
