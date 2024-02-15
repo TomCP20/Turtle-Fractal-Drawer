@@ -54,8 +54,11 @@ def dragon_curve(level: int, size: float, rainbow_generator: cycle) -> None:
             t.forward(step_length)
 
 def sierpinski_gasket(level: int, length: float, rainbow_generator: cycle) -> None:
+    t.teleport(-length/2, -length/3)
+    if level % 2 == 0:
+        t.left(60)
     step_length = length/(2**(level-1))
-    commands = l_system(level, "XF", {"X": "YF+XF+Y", "Y": " XF-YF-X"})
+    commands = l_system(level, "XF", {"X": "YF-XF-Y", "Y": " XF+YF+X"})
     for c in commands:
         if c == "-":
             t.right(60)
@@ -64,13 +67,6 @@ def sierpinski_gasket(level: int, length: float, rainbow_generator: cycle) -> No
         elif c == "F":
             t.pencolor(next(rainbow_generator))
             t.forward(step_length)
-
-def sierpinski_start(level: int, length: float, rainbow_generator) -> None:
-    t.teleport(length/2, -length/3)
-    t.left(120)
-    if level % 2 == 1:
-        t.left(60)
-    sierpinski_gasket(level, length, rainbow_generator)
 
 def draw_gosper_curve(level: int, size: float, rainbow_generator: cycle) -> None:
     t.teleport(0, size/4)
@@ -115,7 +111,7 @@ def peano_curve(level: int, curve_size: float, rainbow_generator: cycle) -> None
 
 #utility
 
-def substitute(commands: str, rules: dict[str, str]):
+def substitute(commands: str, rules: dict[str, str]) -> str:
     return "".join(rules[c] if c in rules else c for c in commands)
 
 def l_system(level: int, axiom: str, rules: dict[str, str]) -> str:
@@ -143,7 +139,7 @@ curves = {
     1: (koch_start, "The Koch Snowflake"), 
     2: (hilbert_curve, "The Hilbert Curve"), 
     3: (dragon_curve, "The Dragon Curve"), 
-    4: (sierpinski_start, "The Sierpiński gasket"), 
+    4: (sierpinski_gasket, "The Sierpiński gasket"), 
     5: (draw_gosper_curve, "The Gosper curve"), 
     6: (moore_curve, "The Moore curve"), 
     7: (peano_curve, "The Peano curve")}
