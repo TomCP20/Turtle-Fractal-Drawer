@@ -25,7 +25,7 @@ def dragon_curve(level: int, size: float, rainbow_generator: cycle, t: Turtle) -
     commands = l_system(level, "F", {"F": "F-G", "G": "F+G"})
     draw_l(commands, "FG", 90, rainbow_generator, step_length, t)
 
-def sierpinski_curve(level: int, length: float, rainbow_generator: cycle, t: Turtle) -> None:
+def sierpinski_triangle(level: int, length: float, rainbow_generator: cycle, t: Turtle) -> None:
     t.teleport(-length/2, -length/3)
     step_length = length/(2**(level-1))
     commands = l_system(level, "F-G-G", {"F": "F-G+F+G-F", "G": "GG"})
@@ -100,7 +100,7 @@ def main():
         1: (koch_snowflake, "The Koch Snowflake"), 
         2: (hilbert_curve, "The Hilbert Curve"), 
         3: (dragon_curve, "The Dragon Curve"), 
-        4: (sierpinski_curve, "The Sierpiński triangle"),
+        4: (sierpinski_triangle, "The Sierpiński triangle"),
         5: (sierpinski_arrowhead_curve, "The Sierpiński arrowhead curve"), 
         6: (draw_gosper_curve, "The Gosper curve"), 
         7: (moore_curve, "The Moore curve"), 
