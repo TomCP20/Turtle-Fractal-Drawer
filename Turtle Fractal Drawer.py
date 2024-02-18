@@ -6,7 +6,7 @@ from collections.abc import Callable
 from itertools import cycle
 import sys
 
-#fractal
+#curves
 
 def koch_snowflake(level: int, length: float, rainbow_generator: cycle, t: Turtle) -> None:
     t.teleport(-length/2, length/3)
@@ -82,13 +82,13 @@ def peano_curve(level: int, curve_size: float, rainbow_generator: cycle, t: Turt
 def substitute(commands: str, rules: dict[str, str]) -> str:
     return "".join(rules[c] if c in rules else c for c in commands)
 
-def l_system_gen(level: int, axiom: str, rules: dict[str, str]) -> str:
+def l_system_gen(level: int, axiom: str, rules: dict[str, str]) -> str: # generates l-system commands
     if level == 1:
         return axiom
     else:
         return substitute(l_system_gen(level-1, axiom, rules), rules)
 
-def l_system_draw(commands: str, forward: str, angle: int, rainbow_generator: cycle, step_length: float, t: Turtle):
+def l_system_draw(commands: str, forward: str, angle: int, rainbow_generator: cycle, step_length: float, t: Turtle) -> None: # draws l-system commands using the turtle
     for c in commands:
         if c in forward:
             t.pencolor(next(rainbow_generator))
@@ -107,11 +107,13 @@ def iterate_curve(curve: Callable[[int, float, cycle, Turtle], None], max_iterat
 
 #UI
 
-def reset(t: Turtle):
+def reset(t: Turtle) -> None:
     t.reset()
     t.screen.screensize(canvwidth=500, canvheight=500,  bg="black")
     t.hideturtle()
     t.speed(0)
+
+
 
 def main():
     curves = [
