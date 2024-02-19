@@ -20,6 +20,26 @@ def quadratic_koch_curve(level: int, length: float, rainbow_generator: cycle, t:
     commands = l_system_gen(level, "F", {"F": "F-F+F+F-F"})
     l_system_draw(commands, "F", 90, rainbow_generator, step_length, t)
 
+
+#todo center
+def cesaro_fractal(level: int, length: float, rainbow_generator: cycle, t: Turtle) -> None:
+    t.teleport(-length/2, 0)
+    step_length = length/(3**(level-1))
+    commands = l_system_gen(level, "F++", {"F": "F-F++F-F"})
+    l_system_draw(commands, "F", 75, rainbow_generator, step_length, t)
+
+def minkowski_sausage(level: int, length: float, rainbow_generator: cycle, t: Turtle) -> None:
+    t.teleport(-length/2, 0)
+    step_length = length/(4**(level-1))
+    commands = l_system_gen(level, "F", {"F": "F+F-F-FF+F+F-F"})
+    l_system_draw(commands, "F", 90, rainbow_generator, step_length, t)
+
+def minkowski_island(level: int, length: float, rainbow_generator: cycle, t: Turtle) -> None:
+    t.teleport(-length/2, length/2)
+    step_length = length/(4**(level-1))
+    commands = l_system_gen(level, "F+F+F+F+", {"F": "F+F-F-FF+F+F-F"})
+    l_system_draw(commands, "F", 90, rainbow_generator, step_length, t)
+
 def hilbert_curve(level: int, curve_size: float, rainbow_generator: cycle, t: Turtle) -> None:
     t.teleport(-curve_size/2, -curve_size/2)
     step_length = curve_size/((2**level)-1)
@@ -119,6 +139,9 @@ def main():
     curves = [
         (koch_snowflake, "The Koch Snowflake"),
         (quadratic_koch_curve, "The Quadratic Koch curve"),
+        (cesaro_fractal, "The Cesàro fractal"),
+        (minkowski_sausage,"The Minkowski sausage"),
+        (minkowski_island,"The Minkowski island"),
         (hilbert_curve, "The Hilbert Curve"), 
         (dragon_curve, "The Dragon Curve"), 
         (sierpinski_triangle, "The Sierpiński triangle"),
