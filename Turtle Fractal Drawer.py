@@ -20,13 +20,11 @@ def quadratic_koch_curve(level: int, length: float, rainbow_generator: cycle, t:
     commands = l_system_gen(level, "F", {"F": "F-F+F+F-F"})
     l_system_draw(commands, "F", 90, rainbow_generator, step_length, t)
 
-
-#todo center
 def cesaro_fractal(level: int, length: float, rainbow_generator: cycle, t: Turtle) -> None:
     t.teleport(-length/2, 0)
-    step_length = length/(3**(level-1))
+    step_length = length/(2.5**(level-1))
     commands = l_system_gen(level, "F++", {"F": "F-F++F-F"})
-    l_system_draw(commands, "F", 75, rainbow_generator, step_length, t)
+    l_system_draw(commands, "F", 75.52, rainbow_generator, step_length, t)
 
 def minkowski_sausage(level: int, length: float, rainbow_generator: cycle, t: Turtle) -> None:
     t.teleport(-length/2, 0)
@@ -108,7 +106,7 @@ def l_system_gen(level: int, axiom: str, rules: dict[str, str]) -> str: # genera
     else:
         return substitute(l_system_gen(level-1, axiom, rules), rules)
 
-def l_system_draw(commands: str, forward: str, angle: int, rainbow_generator: cycle, step_length: float, t: Turtle) -> None: # draws l-system commands using the turtle
+def l_system_draw(commands: str, forward: str, angle: float, rainbow_generator: cycle, step_length: float, t: Turtle) -> None: # draws l-system commands using the turtle
     for c in commands:
         if c in forward:
             t.pencolor(next(rainbow_generator))
