@@ -6,7 +6,6 @@ from time import sleep
 import math
 from collections.abc import Callable
 from itertools import cycle
-from typing import Iterator
 from dataclasses import dataclass
 
 
@@ -19,7 +18,7 @@ class Curve:
 
     level: int
     length: float
-    rainbow_generator: Iterator[str]
+    col_list: list[str]
     t: Turtle
 
     def koch_snowflake(
@@ -153,9 +152,10 @@ class Curve:
         step_length: float,
     ) -> None:
         """draws l-system commands using the turtle"""
+        rainbow_generator = cycle(self.col_list)
         for c in commands:
             if c in forward:
-                self.t.pencolor(next(self.rainbow_generator))
+                self.t.pencolor(next(rainbow_generator))
                 self.t.forward(step_length)
             elif c == "+":
                 self.t.right(angle)
@@ -178,7 +178,7 @@ def iterate_curve(
     """draws multiple iterations of a curve"""
     for i in range(1, max_iterations + 1):
         reset(t)
-        curve(Curve(i, size, cycle(col_list), t))
+        curve(Curve(i, size, col_list, t))
         sleep(1)
 
 
