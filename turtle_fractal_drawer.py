@@ -219,7 +219,6 @@ def main():
 
     rainbow = ["red", "orange", "yellow", "green", "blue", "indigo", "violet"]
     t = Turtle()
-    reset(t)
 
     iterate_curve(curve_func, max_iterations, 500, rainbow, t)
 
