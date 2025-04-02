@@ -1,3 +1,5 @@
+"""Turtle Fractal Drawer - A Turtle program that draws fractals."""
+
 from turtle import Turtle
 from tkinter import simpledialog
 from time import sleep
@@ -14,6 +16,7 @@ type Curve = Callable[[int, float, Iterator[str], Turtle], None]
 def koch_snowflake(
     level: int, length: float, rainbow_generator: Iterator[str], t: Turtle
 ) -> None:
+    """The Koch snowflake"""
     t.teleport(-length / 2, length / 3)
     step_length = length / (3 ** (level - 1))
     commands = l_system_gen(level, "F++F++F++", {"F": "F-F++F-F"})
@@ -23,6 +26,7 @@ def koch_snowflake(
 def quadratic_koch_curve(
     level: int, length: float, rainbow_generator: Iterator[str], t: Turtle
 ) -> None:
+    """The quadratic Koch curve"""
     t.teleport(-length / 2, 0)
     step_length = length / (3 ** (level - 1))
     commands = l_system_gen(level, "F", {"F": "F-F+F+F-F"})
@@ -32,6 +36,7 @@ def quadratic_koch_curve(
 def cesaro_fractal(
     level: int, length: float, rainbow_generator: Iterator[str], t: Turtle
 ) -> None:
+    """The Cesàro fractal"""
     t.teleport(-length / 2, 0)
     step_length = length / (2.5 ** (level - 1))
     commands = l_system_gen(level, "F++", {"F": "F-F++F-F"})
@@ -41,6 +46,7 @@ def cesaro_fractal(
 def minkowski_sausage(
     level: int, length: float, rainbow_generator: Iterator[str], t: Turtle
 ) -> None:
+    """The Minkowski sausage"""
     t.teleport(-length / 2, 0)
     step_length = length / (4 ** (level - 1))
     commands = l_system_gen(level, "F", {"F": "F+F-F-FF+F+F-F"})
@@ -50,6 +56,7 @@ def minkowski_sausage(
 def minkowski_island(
     level: int, length: float, rainbow_generator: Iterator[str], t: Turtle
 ) -> None:
+    """The Minkowski sausage"""
     t.teleport(-length / 2, length / 2)
     step_length = length / (4 ** (level - 1))
     commands = l_system_gen(level, "F+F+F+F+", {"F": "F+F-F-FF+F+F-F"})
@@ -59,6 +66,7 @@ def minkowski_island(
 def hilbert_curve(
     level: int, curve_size: float, rainbow_generator: Iterator[str], t: Turtle
 ) -> None:
+    """The Hilbert Curve"""
     t.teleport(-curve_size / 2, -curve_size / 2)
     step_length = curve_size / ((2**level) - 1)
     commands = l_system_gen(
@@ -70,6 +78,7 @@ def hilbert_curve(
 def dragon_curve(
     level: int, size: float, rainbow_generator: Iterator[str], t: Turtle
 ) -> None:
+    """The Dragon Curve"""
     step_length = size / (math.sqrt(2) * (level ** math.sqrt(2)))
     commands = l_system_gen(level, "F", {"F": "F-G", "G": "F+G"})
     l_system_draw(commands, "FG", 90, rainbow_generator, step_length, t)
@@ -78,6 +87,7 @@ def dragon_curve(
 def sierpinski_triangle(
     level: int, length: float, rainbow_generator: Iterator[str], t: Turtle
 ) -> None:
+    """The Sierpiński triangle"""
     t.teleport(-length / 2, -length / 3)
     step_length = length / (2 ** (level - 1))
     commands = l_system_gen(level, "F-G-G", {"F": "F-G+F+G-F", "G": "GG"})
@@ -87,6 +97,7 @@ def sierpinski_triangle(
 def sierpinski_curve(
     level: int, length: float, rainbow_generator: Iterator[str], t: Turtle
 ) -> None:
+    """The Sierpiński curve"""
     step_length = length / (2 ** (level) + 2 ** (level + 1 / 2) - 1 - 2 * math.sqrt(2))
     t.teleport(-step_length / 2, length / 2)
     commands = l_system_gen(level, "F++XF++F++XF", {"X": "XF-G-XF++F++XF-G-X"})
@@ -96,6 +107,7 @@ def sierpinski_curve(
 def sierpinski_square_curve(
     level: int, length: float, rainbow_generator: Iterator[str], t: Turtle
 ) -> None:
+    """The Sierpiński square curve"""
     step_length = length / (2 ** (level + 1) - 3)
     t.teleport(-step_length / 2, length / 2)
     commands = l_system_gen(level, "F+XF+F+XF", {"X": "XF-F+F-XF+F+XF-F+F-X"})
@@ -105,6 +117,7 @@ def sierpinski_square_curve(
 def sierpinski_arrowhead_curve(
     level: int, length: float, rainbow_generator: Iterator[str], t: Turtle
 ) -> None:
+    """The Sierpiński arrowhead curve"""
     t.teleport(-length / 2, -length / 3)
     if level % 2 == 0:
         t.left(60)
@@ -116,6 +129,7 @@ def sierpinski_arrowhead_curve(
 def draw_gosper_curve(
     level: int, size: float, rainbow_generator: Iterator[str], t: Turtle
 ) -> None:
+    """The Gosper curve"""
     t.teleport(0, size / 4)
     step_length = size / math.sqrt(7) ** (level)
     commands = l_system_gen(
@@ -127,6 +141,7 @@ def draw_gosper_curve(
 def moore_curve(
     level: int, curve_size: float, rainbow_generator: Iterator[str], t: Turtle
 ) -> None:
+    """The Moore curve"""
     step_length = curve_size / ((2**level) - 1)
     t.teleport(-step_length / 2, -curve_size / 2)
     t.left(90)
@@ -139,6 +154,7 @@ def moore_curve(
 def peano_curve(
     level: int, curve_size: float, rainbow_generator: Iterator[str], t: Turtle
 ) -> None:
+    """The Peano curve"""
     step_length = curve_size / ((3**level) - 1)
     t.teleport(-curve_size / 2, -curve_size / 2)
     t.left(90)
@@ -153,17 +169,14 @@ def peano_curve(
 # utility
 
 
-def substitute(commands: str, rules: dict[str, str]) -> str:
-    return "".join(rules[c] if c in rules else c for c in commands)
-
-
-def l_system_gen(
-    level: int, axiom: str, rules: dict[str, str]
-) -> str:  # generates l-system commands
+def l_system_gen(level: int, axiom: str, rules: dict[str, str]) -> str:
+    """generates l-system commands"""
     if level == 1:
         return axiom
-    else:
-        return substitute(l_system_gen(level - 1, axiom, rules), rules)
+    return "".join(
+        rules[command] if command in rules else command
+        for command in l_system_gen(level - 1, axiom, rules)
+    )
 
 
 def l_system_draw(
@@ -173,7 +186,8 @@ def l_system_draw(
     rainbow_generator: Iterator[str],
     step_length: float,
     t: Turtle,
-) -> None:  # draws l-system commands using the turtle
+) -> None:
+    """draws l-system commands using the turtle"""
     for c in commands:
         if c in forward:
             t.pencolor(next(rainbow_generator))
@@ -183,7 +197,6 @@ def l_system_draw(
         elif c == "-":
             t.left(angle)
 
-
 def iterate_curve(
     curve: Curve,
     max_iterations: int,
@@ -191,16 +204,16 @@ def iterate_curve(
     col_list: list[str],
     t: Turtle,
 ) -> None:
+    """draws multiple iterations of a curve"""
     for i in range(1, max_iterations + 1):
         reset(t)
         curve(i, size, cycle(col_list), t)
         sleep(1)
 
-
 # UI
 
-
 def reset(t: Turtle) -> None:
+    """resets the turtle"""
     t.reset()
     t.screen.screensize(canvwidth=500, canvheight=500, bg="black")
     t.hideturtle()
@@ -208,6 +221,7 @@ def reset(t: Turtle) -> None:
 
 
 def main():
+    """main function"""
     curves: list[tuple[Curve, str]] = [
         (koch_snowflake, "The Koch Snowflake"),
         (quadratic_koch_curve, "The Quadratic Koch curve"),
