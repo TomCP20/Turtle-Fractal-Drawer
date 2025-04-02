@@ -9,9 +9,6 @@ from itertools import cycle
 from dataclasses import dataclass
 
 
-# curves
-
-
 @dataclass
 class Curve:
     """class that draws the curve"""
@@ -165,8 +162,6 @@ class Curve:
 
 type CurveFunc = Callable[[Curve], None]
 
-# utility
-
 
 def iterate_curve(
     curve: CurveFunc,
@@ -180,9 +175,6 @@ def iterate_curve(
         reset(t)
         curve(Curve(i, size, col_list, t))
         sleep(1)
-
-
-# UI
 
 
 def reset(t: Turtle) -> None:
