@@ -160,11 +160,8 @@ class Curve:
                 self.t.left(angle)
 
 
-type CurveFunc = Callable[[Curve], None]
-
-
 def iterate_curve(
-    curve: CurveFunc,
+    curve_func: Callable[[Curve], None],
     max_iterations: int,
     size: float,
     col_list: list[str],
@@ -173,7 +170,7 @@ def iterate_curve(
     """draws multiple iterations of a curve"""
     for i in range(1, max_iterations + 1):
         reset(t)
-        curve(Curve(i, size, col_list, t))
+        curve_func(Curve(i, size, col_list, t))
         sleep(1)
 
 
@@ -187,7 +184,7 @@ def reset(t: Turtle) -> None:
 
 def main():
     """main function"""
-    curves: list[CurveFunc] = [
+    curves: list[Callable[[Curve], None]] = [
         Curve.koch_snowflake,
         Curve.quadratic_koch_curve,
         Curve.cesaro_fractal,
@@ -212,7 +209,7 @@ def main():
     )
     if not curvesno:
         return
-    curve = curves[curvesno - 1]
+    curve_func = curves[curvesno - 1]
 
     max_iterations = simpledialog.askinteger(
         "Max iterations", "How many iterations of the curve do you want?", minvalue=1
@@ -224,7 +221,7 @@ def main():
     t = Turtle()
     reset(t)
 
-    iterate_curve(curve, max_iterations, 500, rainbow, t)
+    iterate_curve(curve_func, max_iterations, 500, rainbow, t)
 
     t.screen.mainloop()
 
