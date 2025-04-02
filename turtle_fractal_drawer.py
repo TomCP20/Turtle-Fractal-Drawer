@@ -197,6 +197,7 @@ def l_system_draw(
         elif c == "-":
             t.left(angle)
 
+
 def iterate_curve(
     curve: Curve,
     max_iterations: int,
@@ -210,7 +211,9 @@ def iterate_curve(
         curve(i, size, cycle(col_list), t)
         sleep(1)
 
+
 # UI
+
 
 def reset(t: Turtle) -> None:
     """resets the turtle"""
@@ -222,24 +225,24 @@ def reset(t: Turtle) -> None:
 
 def main():
     """main function"""
-    curves: list[tuple[Curve, str]] = [
-        (koch_snowflake, "The Koch Snowflake"),
-        (quadratic_koch_curve, "The Quadratic Koch curve"),
-        (cesaro_fractal, "The Cesàro fractal"),
-        (minkowski_sausage, "The Minkowski sausage"),
-        (minkowski_island, "The Minkowski island"),
-        (hilbert_curve, "The Hilbert Curve"),
-        (dragon_curve, "The Dragon Curve"),
-        (sierpinski_triangle, "The Sierpiński triangle"),
-        (sierpinski_curve, "The Sierpiński curve"),
-        (sierpinski_square_curve, "The Sierpiński square curve"),
-        (sierpinski_arrowhead_curve, "The Sierpiński arrowhead curve"),
-        (draw_gosper_curve, "The Gosper curve"),
-        (moore_curve, "The Moore curve"),
-        (peano_curve, "The Peano curve"),
+    curves: list[Curve] = [
+        koch_snowflake,
+        quadratic_koch_curve,
+        cesaro_fractal,
+        minkowski_sausage,
+        minkowski_island,
+        hilbert_curve,
+        dragon_curve,
+        sierpinski_triangle,
+        sierpinski_curve,
+        sierpinski_square_curve,
+        sierpinski_arrowhead_curve,
+        draw_gosper_curve,
+        moore_curve,
+        peano_curve,
     ]
     dialog = "What curve do you want to display?\n" + "\n".join(
-        f"{i}) {v[1]}" for i, v in enumerate(curves, 1)
+        f"{i}) {v.__doc__}" for i, v in enumerate(curves, 1)
     )
 
     curvesno = simpledialog.askinteger(
@@ -247,7 +250,7 @@ def main():
     )
     if not curvesno:
         return
-    curve = curves[curvesno - 1][0]
+    curve = curves[curvesno - 1]
 
     max_iterations = simpledialog.askinteger(
         "Max iterations", "How many iterations of the curve do you want?", minvalue=1
