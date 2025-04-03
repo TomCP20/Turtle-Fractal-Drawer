@@ -13,7 +13,7 @@ import re
 LENGTH = 500
 
 
-@dataclass(kw_only = True)
+@dataclass(kw_only=True)
 class Curve:
     """represents the propeties of a curve"""
 
@@ -168,18 +168,18 @@ curves: list[Curve] = [
         name="""fractal (binary) tree""",
         _pos=(0, -2),
         _dir=90,
-        _curve_size=lambda level: (2**(level-1))*(2+sqrt(2))/3,
+        _curve_size=lambda level: (2 ** (level - 1)) * (2 + sqrt(2)) / 3,
         axiom="FS",
         rules={"F": "G[-FS]+F", "G": "GG"},
-        angle=45
+        angle=45,
     ),
     Curve(
         name="""fractal plant""",
         _pos=(-2, -2),
-        _curve_size=lambda level: (level-1)**2 + 1,
-        axiom="-X",
+        _curve_size=lambda level: (1 + sqrt(2)) ** level,
+        axiom="-F+[[X]-X]-F[-FX]+X",
         rules={"F": "FF", "X": "F+[[X]-X]-F[-FX]+X"},
-        angle=45
+        angle=45,
     ),
 ]
 
@@ -222,10 +222,10 @@ class CurveDrawer:
 
     def iterate_curve(
         self,
-        max_iterations: int,
+        iterations: int,
     ) -> None:
         """draws multiple iterations of a curve"""
-        for i in range(1, max_iterations + 1):
+        for i in range(1, iterations + 1):
             self.reset()
             self.l_system_draw(i)
             sleep(1)
@@ -252,16 +252,16 @@ def main():
         return
     curve = curves[curvesno - 1]
 
-    max_iterations = simpledialog.askinteger(
+    iterations = simpledialog.askinteger(
         "Max iterations", "How many iterations of the curve do you want?", minvalue=1
     )
-    if not max_iterations:
+    if not iterations:
         return
 
     rainbow = ["red", "orange", "yellow", "green", "blue", "indigo", "violet"]
 
     curve_drawer = CurveDrawer(rainbow, curve)
-    curve_drawer.iterate_curve(max_iterations)
+    curve_drawer.iterate_curve(iterations)
 
 
 if __name__ == "__main__":
