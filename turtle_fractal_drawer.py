@@ -173,6 +173,14 @@ curves: list[Curve] = [
         rules={"F": "G[-FS]+F", "G": "GG"},
         angle=45
     ),
+    Curve(
+        name="""fractal plant""",
+        _pos=(-2, -2),
+        _curve_size=lambda level: (level-1)**2 + 1,
+        axiom="-X",
+        rules={"F": "FF", "X": "F+[[X]-X]-F[-FX]+X"},
+        angle=45
+    ),
 ]
 
 
