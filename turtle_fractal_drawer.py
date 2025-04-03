@@ -7,6 +7,7 @@ import math
 from collections.abc import Callable
 from itertools import cycle
 from dataclasses import dataclass
+import re
 
 
 @dataclass
@@ -135,10 +136,9 @@ class Curve:
     def l_system_gen(self, axiom: str, rules: dict[str, str]) -> str:
         """generates l-system commands"""
         commands = axiom
+        pattern: re.Pattern[str] = re.compile("|".join(rules.keys()))
         for _ in range(self.level - 1):
-            commands = "".join(
-                rules[command] if command in rules else command for command in commands
-            )
+            commands = pattern.sub(lambda m : rules[m.group(0)], commands)
         return commands
 
     def l_system_draw(
