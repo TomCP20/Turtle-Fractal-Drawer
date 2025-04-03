@@ -3,7 +3,7 @@
 from turtle import Turtle
 from tkinter import simpledialog
 from time import sleep
-import math
+from math import sqrt
 from collections.abc import Callable
 from itertools import cycle
 from dataclasses import dataclass, field
@@ -112,7 +112,7 @@ curves: list[Curve] = [
         """The Dragon Curve""",
         (0, 0),
         0,
-        lambda level: (math.sqrt(2) * (level ** math.sqrt(2))),
+        lambda level: (sqrt(2) * (level ** sqrt(2))),
         "F",
         {"F": "F-G", "G": "F+G"},
     ),
@@ -128,11 +128,11 @@ curves: list[Curve] = [
     Curve(
         """The Sierpiński curve""",
         lambda level: (
-            -2 * ((2 ** (level) - 2) * (1 + math.sqrt(2)) + 1),
+            -2 * ((2 ** (level) - 2) * (1 + sqrt(2)) + 1),
             2,
         ),
         0,
-        lambda level: ((2 ** (level) - 2) * (1 + math.sqrt(2)) + 1),
+        lambda level: ((2 ** (level) - 2) * (1 + sqrt(2)) + 1),
         "F++XF++F++XF",
         {"X": "XF-G-XF++F++XF-G-X"},
         45,
@@ -158,7 +158,7 @@ curves: list[Curve] = [
         """The Gosper curve""",
         (0, 4),
         0,
-        lambda level: math.sqrt(7) ** (level),
+        lambda level: sqrt(7) ** (level),
         "F",
         {"F": "F+G++G-F--FF-G+", "G": "-F+GG++G+F--F-G"},
         60,
