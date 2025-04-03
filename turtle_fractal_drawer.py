@@ -164,6 +164,15 @@ curves: list[Curve] = [
         axiom="XFYFX+F+YFXFY-F-XFYFX",
         rules={"X": "XFYFX+F+YFXFY-F-XFYFX", "Y": "YFXFY-F-XFYFX+F+YFXFY"},
     ),
+    Curve(
+        name="""fractal (binary) tree""",
+        _pos=(0, -2),
+        _dir=90,
+        _curve_size=lambda level: (level-1)**2 + 1,
+        axiom="FS",
+        rules={"F": "G[-FS]+F", "G": "GG"},
+        angle=45
+    ),
 ]
 
 
@@ -179,10 +188,11 @@ class CurveDrawer:
         """draws l-system commands using the turtle"""
         x, y = self.curve.initial_dir(level)
         self.t.teleport(x, y)
-        self.t.left(self.curve.initial_angle(level))
+        self.t.setheading(self.curve.initial_angle(level))
         rainbow_generator = cycle(self.col_list)
         step_length = self.curve.step_length(level)
         commands = self.curve.l_system_gen(level)
+        stack: list[tuple[tuple[float, float], float]] = []
         for c in commands:
             if c in "FG":
                 self.t.pencolor(next(rainbow_generator))
@@ -191,6 +201,16 @@ class CurveDrawer:
                 self.t.right(self.curve.angle)
             elif c == "-":
                 self.t.left(self.curve.angle)
+            elif c == "[":
+                stack.append((self.t.pos(), self.t.heading()))
+            elif c == "]":
+                pos, h = stack.pop()
+                self.t.teleport(*pos)
+                self.t.seth(h)
+            elif c == "S":
+                self.t.showturtle()
+                self.t.stamp()
+                self.t.hideturtle()
 
     def iterate_curve(
         self,
