@@ -128,11 +128,11 @@ curves: list[Curve] = [
     Curve(
         """The Sierpiński curve""",
         lambda level: (
-            -((2 ** (level) + 2 ** (level + 1 / 2) - 1 - 2 * math.sqrt(2))) * 2,
+            -2 * ((2 ** (level) - 2) * (1 + math.sqrt(2)) + 1),
             2,
         ),
         0,
-        lambda level: (2 ** (level) + 2 ** (level + 1 / 2) - 1 - 2 * math.sqrt(2)),
+        lambda level: ((2 ** (level) - 2) * (1 + math.sqrt(2)) + 1),
         "F++XF++F++XF",
         {"X": "XF-G-XF++F++XF-G-X"},
         45,
