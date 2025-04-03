@@ -18,9 +18,9 @@ class Curve:
     """represents the propeties of a curve"""
 
     name: str
-    initial_pos: Callable[[int], tuple[float, float]]
-    initial_angle: Callable[[int], int]
-    step_length: Callable[[int], float]
+    _initial_pos: tuple[float, float] | Callable[[int], tuple[float, float]]
+    _initial_angle: int | Callable[[int], int]
+    _curve_size: Callable[[int], float]
     axiom: str
     rules: dict[str, str]
     angle: float = 90
@@ -33,71 +33,94 @@ class Curve:
             commands = pattern.sub(lambda m: self.rules[m.group(0)], commands)
         return commands
 
+    def initial_pos(self, level: int) -> tuple[float, float]:
+        """The initial position for the turtle"""
+        match self._initial_pos:
+            case (x, y):
+                pass
+            case f:
+                x, y = f(level)
+        x = LENGTH / x if x else 0
+        y = LENGTH / y if y else 0
+        return (x, y)
+
+    def initial_angle(self, level: int) -> int:
+        """The initial position for the turtle"""
+        match self._initial_angle:
+            case int(a):
+                return a
+            case f:
+                return f(level)
+
+    def step_length(self, level: int) -> float:
+        """The initial position for the turtle"""
+        return LENGTH / self._curve_size(level)
+
 
 curves: list[Curve] = [
     Curve(
         """The Koch snowflake""",
-        lambda _: (-LENGTH / 2, LENGTH / 3),
-        lambda _: 0,
-        lambda level: LENGTH / (3 ** (level - 1)),
+        (-2, 3),
+        0,
+        lambda level: (3 ** (level - 1)),
         "F++F++F++",
         {"F": "F-F++F-F"},
         60,
     ),
     Curve(
         """The quadratic Koch curve""",
-        lambda _: (-LENGTH / 2, 0),
-        lambda _: 0,
-        lambda level: LENGTH / (3 ** (level - 1)),
+        (-2, 0),
+        0,
+        lambda level: (3 ** (level - 1)),
         "F",
         {"F": "F-F+F+F-F"},
     ),
     Curve(
         """The Cesàro fractal""",
-        lambda _: (-LENGTH / 2, 0),
-        lambda _: 0,
-        lambda level: LENGTH / (2.5 ** (level - 1)),
+        (-2, 0),
+        0,
+        lambda level: (2.5 ** (level - 1)),
         "F++",
         {"F": "F-F++F-F"},
         75.52,
     ),
     Curve(
         """The Minkowski sausage""",
-        lambda _: (-LENGTH / 2, 0),
-        lambda _: 0,
-        lambda level: LENGTH / (4 ** (level - 1)),
+        (-2, 0),
+        0,
+        lambda level: (4 ** (level - 1)),
         "F",
         {"F": "F+F-F-FF+F+F-F"},
     ),
     Curve(
         """The Minkowski island""",
-        lambda _: (-LENGTH / 2, LENGTH / 2),
-        lambda _: 0,
-        lambda level: LENGTH / (4 ** (level - 1)),
+        (-2, 2),
+        0,
+        lambda level: (4 ** (level - 1)),
         "F+F+F+F+",
         {"F": "F+F-F-FF+F+F-F"},
     ),
     Curve(
         """The Hilbert Curve""",
-        lambda _: (-LENGTH / 2, -LENGTH / 2),
-        lambda _: 0,
-        lambda level: LENGTH / ((2**level) - 1),
+        (-2, -2),
+        0,
+        lambda level: ((2**level) - 1),
         "-BF+AFA+FB-",
         {"A": "-BF+AFA+FB-", "B": "+AF-BFB-FA+"},
     ),
     Curve(
         """The Dragon Curve""",
-        lambda _: (0, 0),
-        lambda _: 0,
-        lambda level: LENGTH / (math.sqrt(2) * (level ** math.sqrt(2))),
+        (0, 0),
+        0,
+        lambda level: (math.sqrt(2) * (level ** math.sqrt(2))),
         "F",
         {"F": "F-G", "G": "F+G"},
     ),
     Curve(
         """The Sierpiński triangle""",
-        lambda _: (-LENGTH / 2, -LENGTH / 3),
-        lambda _: 0,
-        lambda level: LENGTH / (2 ** (level - 1)),
+        (-2, -3),
+        0,
+        lambda level: (2 ** (level - 1)),
         "F-G-G",
         {"F": "F-G+F+G-F", "G": "GG"},
         120,
@@ -105,56 +128,54 @@ curves: list[Curve] = [
     Curve(
         """The Sierpiński curve""",
         lambda level: (
-            -(LENGTH / (2 ** (level) + 2 ** (level + 1 / 2) - 1 - 2 * math.sqrt(2)))
-            / 2,
-            LENGTH / 2,
+            -((2 ** (level) + 2 ** (level + 1 / 2) - 1 - 2 * math.sqrt(2))) / 2,
+            2,
         ),
-        lambda _: 0,
-        lambda level: LENGTH
-        / (2 ** (level) + 2 ** (level + 1 / 2) - 1 - 2 * math.sqrt(2)),
+        0,
+        lambda level: (2 ** (level) + 2 ** (level + 1 / 2) - 1 - 2 * math.sqrt(2)),
         "F++XF++F++XF",
         {"X": "XF-G-XF++F++XF-G-X"},
         45,
     ),
     Curve(
         """The Sierpiński square curve""",
-        lambda level: (-(LENGTH / (2 ** (level + 1) - 3)) / 2, LENGTH / 2),
-        lambda _: 0,
-        lambda level: LENGTH / (2 ** (level + 1) - 3),
+        lambda level: (-((2 ** (level + 1) - 3)) / 2, 2),
+        0,
+        lambda level: (2 ** (level + 1) - 3),
         "F+XF+F+XF",
         {"X": "XF-F+F-XF+F+XF-F+F-X"},
     ),
     Curve(
         """The Sierpiński arrowhead curve""",
-        lambda _: (-LENGTH / 2, -LENGTH / 3),
+        (-2, -3),
         lambda level: 60 if level % 2 == 0 else 0,
-        lambda level: LENGTH / (2 ** (level - 1)),
+        lambda level: (2 ** (level - 1)),
         "XF",
         {"X": "YF+XF+Y", "Y": "XF-YF-X"},
         60,
     ),
     Curve(
         """The Gosper curve""",
-        lambda _: (0, LENGTH / 4),
-        lambda _: 0,
-        lambda level: LENGTH / math.sqrt(7) ** (level),
+        (0, 4),
+        0,
+        lambda level: math.sqrt(7) ** (level),
         "F",
         {"F": "F+G++G-F--FF-G+", "G": "-F+GG++G+F--F-G"},
         60,
     ),
     Curve(
         """The Moore curve""",
-        lambda level: (-(LENGTH / ((2**level) - 1)) / 2, -LENGTH / 2),
-        lambda _: 90,
-        lambda level: LENGTH / ((2**level) - 1),
+        lambda level: (-(((2**level) - 1)) / 2, -2),
+        90,
+        lambda level: ((2**level) - 1),
         "LFL+F+LFL",
         {"L": "-RF+LFL+FR-", "R": "+LF-RFR-FL+"},
     ),
     Curve(
         """The Peano curve""",
-        lambda _: (-LENGTH / 2, -LENGTH / 2),
-        lambda _: 90,
-        lambda level: LENGTH / ((3**level) - 1),
+        (-2, -2),
+        90,
+        lambda level: ((3**level) - 1),
         "XFYFX+F+YFXFY-F-XFYFX",
         {"X": "XFYFX+F+YFXFY-F-XFYFX", "Y": "YFXFY-F-XFYFX+F+YFXFY"},
     ),
@@ -171,7 +192,8 @@ class CurveDrawer:
 
     def l_system_draw(self, level: int) -> None:
         """draws l-system commands using the turtle"""
-        self.t.teleport(*self.curve.initial_pos(level))
+        x, y = self.curve.initial_pos(level)
+        self.t.teleport(x, y)
         self.t.left(self.curve.initial_angle(level))
         rainbow_generator = cycle(self.col_list)
         step_length = self.curve.step_length(level)
