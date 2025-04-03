@@ -12,7 +12,7 @@ from typing import Self
 
 
 @dataclass
-class Curve:
+class CurveDrawer:
     """class that draws the curve"""
 
     length: float
@@ -180,21 +180,21 @@ class Curve:
 
 def main():
     """main function"""
-    curves: list[Callable[[Curve, int], None]] = [
-        Curve.koch_snowflake,
-        Curve.quadratic_koch_curve,
-        Curve.cesaro_fractal,
-        Curve.minkowski_sausage,
-        Curve.minkowski_island,
-        Curve.hilbert_curve,
-        Curve.dragon_curve,
-        Curve.sierpinski_triangle,
-        Curve.sierpinski_curve,
-        Curve.sierpinski_square_curve,
-        Curve.sierpinski_arrowhead_curve,
-        Curve.draw_gosper_curve,
-        Curve.moore_curve,
-        Curve.peano_curve,
+    curves: list[Callable[[CurveDrawer, int], None]] = [
+        CurveDrawer.koch_snowflake,
+        CurveDrawer.quadratic_koch_curve,
+        CurveDrawer.cesaro_fractal,
+        CurveDrawer.minkowski_sausage,
+        CurveDrawer.minkowski_island,
+        CurveDrawer.hilbert_curve,
+        CurveDrawer.dragon_curve,
+        CurveDrawer.sierpinski_triangle,
+        CurveDrawer.sierpinski_curve,
+        CurveDrawer.sierpinski_square_curve,
+        CurveDrawer.sierpinski_arrowhead_curve,
+        CurveDrawer.draw_gosper_curve,
+        CurveDrawer.moore_curve,
+        CurveDrawer.peano_curve,
     ]
     dialog = "What curve do you want to display?\n" + "\n".join(
         f"{i}) {v.__doc__}" for i, v in enumerate(curves, 1)
@@ -215,8 +215,8 @@ def main():
 
     rainbow = ["red", "orange", "yellow", "green", "blue", "indigo", "violet"]
 
-    curve = Curve(500, rainbow)
-    curve.iterate_curve(curve_func, max_iterations)
+    curve_drawer = CurveDrawer(500, rainbow)
+    curve_drawer.iterate_curve(curve_func, max_iterations)
 
 
 if __name__ == "__main__":
