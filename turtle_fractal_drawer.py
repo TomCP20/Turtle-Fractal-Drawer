@@ -6,136 +6,137 @@ from time import sleep
 import math
 from collections.abc import Callable
 from itertools import cycle
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import re
+from typing import Self
 
 
 @dataclass
 class Curve:
     """class that draws the curve"""
 
-    level: int
     length: float
     col_list: list[str]
-    t: Turtle
+    t: Turtle = field(init=False, default_factory=Turtle)
 
-    def koch_snowflake(self) -> None:
+    def koch_snowflake(self, level: int) -> None:
         """The Koch snowflake"""
         self.t.teleport(-self.length / 2, self.length / 3)
-        step_length: float = self.length / (3 ** (self.level - 1))
-        commands = self.l_system_gen("F++F++F++", {"F": "F-F++F-F"})
+        step_length: float = self.length / (3 ** (level - 1))
+        commands = self.l_system_gen("F++F++F++", {"F": "F-F++F-F"}, level)
         self.l_system_draw(commands, "F", 60, step_length)
 
-    def quadratic_koch_curve(self) -> None:
+    def quadratic_koch_curve(self, level: int) -> None:
         """The quadratic Koch curve"""
         self.t.teleport(-self.length / 2, 0)
-        step_length = self.length / (3 ** (self.level - 1))
-        commands = self.l_system_gen("F", {"F": "F-F+F+F-F"})
+        step_length = self.length / (3 ** (level - 1))
+        commands = self.l_system_gen("F", {"F": "F-F+F+F-F"}, level)
         self.l_system_draw(commands, "F", 90, step_length)
 
-    def cesaro_fractal(self) -> None:
+    def cesaro_fractal(self, level: int) -> None:
         """The Cesàro fractal"""
         self.t.teleport(-self.length / 2, 0)
-        step_length = self.length / (2.5 ** (self.level - 1))
-        commands = self.l_system_gen("F++", {"F": "F-F++F-F"})
+        step_length = self.length / (2.5 ** (level - 1))
+        commands = self.l_system_gen("F++", {"F": "F-F++F-F"}, level)
         self.l_system_draw(commands, "F", 75.52, step_length)
 
-    def minkowski_sausage(self) -> None:
+    def minkowski_sausage(self, level: int) -> None:
         """The Minkowski sausage"""
         self.t.teleport(-self.length / 2, 0)
-        step_length = self.length / (4 ** (self.level - 1))
-        commands = self.l_system_gen("F", {"F": "F+F-F-FF+F+F-F"})
+        step_length = self.length / (4 ** (level - 1))
+        commands = self.l_system_gen("F", {"F": "F+F-F-FF+F+F-F"}, level)
         self.l_system_draw(commands, "F", 90, step_length)
 
-    def minkowski_island(self) -> None:
+    def minkowski_island(self, level: int) -> None:
         """The Minkowski sausage"""
         self.t.teleport(-self.length / 2, self.length / 2)
-        step_length = self.length / (4 ** (self.level - 1))
-        commands = self.l_system_gen("F+F+F+F+", {"F": "F+F-F-FF+F+F-F"})
+        step_length = self.length / (4 ** (level - 1))
+        commands = self.l_system_gen("F+F+F+F+", {"F": "F+F-F-FF+F+F-F"}, level)
         self.l_system_draw(commands, "F", 90, step_length)
 
-    def hilbert_curve(self) -> None:
+    def hilbert_curve(self, level: int) -> None:
         """The Hilbert Curve"""
         self.t.teleport(-self.length / 2, -self.length / 2)
-        step_length = self.length / ((2**self.level) - 1)
+        step_length = self.length / ((2**level) - 1)
         commands = self.l_system_gen(
-            "-BF+AFA+FB-", {"A": "-BF+AFA+FB-", "B": "+AF-BFB-FA+"}
+            "-BF+AFA+FB-", {"A": "-BF+AFA+FB-", "B": "+AF-BFB-FA+"}, level
         )
         self.l_system_draw(commands, "F", 90, step_length)
 
-    def dragon_curve(self) -> None:
+    def dragon_curve(self, level: int) -> None:
         """The Dragon Curve"""
-        step_length = self.length / (math.sqrt(2) * (self.level ** math.sqrt(2)))
-        commands = self.l_system_gen("F", {"F": "F-G", "G": "F+G"})
+        step_length = self.length / (math.sqrt(2) * (level ** math.sqrt(2)))
+        commands = self.l_system_gen("F", {"F": "F-G", "G": "F+G"}, level)
         self.l_system_draw(commands, "FG", 90, step_length)
 
-    def sierpinski_triangle(self) -> None:
+    def sierpinski_triangle(self, level: int) -> None:
         """The Sierpiński triangle"""
         self.t.teleport(-self.length / 2, -self.length / 3)
-        step_length = self.length / (2 ** (self.level - 1))
-        commands = self.l_system_gen("F-G-G", {"F": "F-G+F+G-F", "G": "GG"})
+        step_length = self.length / (2 ** (level - 1))
+        commands = self.l_system_gen("F-G-G", {"F": "F-G+F+G-F", "G": "GG"}, level)
         self.l_system_draw(commands, "FG", 120, step_length)
 
-    def sierpinski_curve(self) -> None:
+    def sierpinski_curve(self, level: int) -> None:
         """The Sierpiński curve"""
         step_length = self.length / (
-            2 ** (self.level) + 2 ** (self.level + 1 / 2) - 1 - 2 * math.sqrt(2)
+            2 ** (level) + 2 ** (level + 1 / 2) - 1 - 2 * math.sqrt(2)
         )
         self.t.teleport(-step_length / 2, self.length / 2)
-        commands = self.l_system_gen("F++XF++F++XF", {"X": "XF-G-XF++F++XF-G-X"})
+        commands = self.l_system_gen("F++XF++F++XF", {"X": "XF-G-XF++F++XF-G-X"}, level)
         self.l_system_draw(commands, "FG", 45, step_length)
 
-    def sierpinski_square_curve(self) -> None:
+    def sierpinski_square_curve(self, level: int) -> None:
         """The Sierpiński square curve"""
-        step_length = self.length / (2 ** (self.level + 1) - 3)
+        step_length = self.length / (2 ** (level + 1) - 3)
         self.t.teleport(-step_length / 2, self.length / 2)
-        commands = self.l_system_gen("F+XF+F+XF", {"X": "XF-F+F-XF+F+XF-F+F-X"})
+        commands = self.l_system_gen("F+XF+F+XF", {"X": "XF-F+F-XF+F+XF-F+F-X"}, level)
         self.l_system_draw(commands, "FG", 90, step_length)
 
-    def sierpinski_arrowhead_curve(self) -> None:
+    def sierpinski_arrowhead_curve(self, level: int) -> None:
         """The Sierpiński arrowhead curve"""
         self.t.teleport(-self.length / 2, -self.length / 3)
-        if self.level % 2 == 0:
+        if level % 2 == 0:
             self.t.left(60)
-        step_length = self.length / (2 ** (self.level - 1))
-        commands = self.l_system_gen("XF", {"X": "YF+XF+Y", "Y": "XF-YF-X"})
+        step_length = self.length / (2 ** (level - 1))
+        commands = self.l_system_gen("XF", {"X": "YF+XF+Y", "Y": "XF-YF-X"}, level)
         self.l_system_draw(commands, "F", 60, step_length)
 
-    def draw_gosper_curve(self) -> None:
+    def draw_gosper_curve(self, level: int) -> None:
         """The Gosper curve"""
         self.t.teleport(0, self.length / 4)
-        step_length = self.length / math.sqrt(7) ** (self.level)
+        step_length = self.length / math.sqrt(7) ** (level)
         commands = self.l_system_gen(
-            "A", {"A": "A+B++B-A--AA-B+", "B": "-A+BB++B+A--A-B"}
+            "A", {"A": "A+B++B-A--AA-B+", "B": "-A+BB++B+A--A-B"}, level
         )
         self.l_system_draw(commands, "AB", 60, step_length)
 
-    def moore_curve(self) -> None:
+    def moore_curve(self, level: int) -> None:
         """The Moore curve"""
-        step_length = self.length / ((2**self.level) - 1)
+        step_length = self.length / ((2**level) - 1)
         self.t.teleport(-step_length / 2, -self.length / 2)
         self.t.left(90)
         commands = self.l_system_gen(
-            "LFL+F+LFL", {"L": "-RF+LFL+FR-", "R": "+LF-RFR-FL+"}
+            "LFL+F+LFL", {"L": "-RF+LFL+FR-", "R": "+LF-RFR-FL+"}, level
         )
         self.l_system_draw(commands, "F", 90, step_length)
 
-    def peano_curve(self) -> None:
+    def peano_curve(self, level: int) -> None:
         """The Peano curve"""
-        step_length = self.length / ((3**self.level) - 1)
+        step_length = self.length / ((3**level) - 1)
         self.t.teleport(-self.length / 2, -self.length / 2)
         self.t.left(90)
         commands = self.l_system_gen(
             "XFYFX+F+YFXFY-F-XFYFX",
             {"X": "XFYFX+F+YFXFY-F-XFYFX", "Y": "YFXFY-F-XFYFX+F+YFXFY"},
+            level,
         )
         self.l_system_draw(commands, "F", 90, step_length)
 
-    def l_system_gen(self, axiom: str, rules: dict[str, str]) -> str:
+    def l_system_gen(self, axiom: str, rules: dict[str, str], level: int) -> str:
         """generates l-system commands"""
         commands = axiom
         pattern: re.Pattern[str] = re.compile("|".join(rules.keys()))
-        for _ in range(self.level - 1):
+        for _ in range(level - 1):
             commands = pattern.sub(lambda m: rules[m.group(0)], commands)
         return commands
 
@@ -157,32 +158,29 @@ class Curve:
             elif c == "-":
                 self.t.left(angle)
 
+    def iterate_curve(
+        self,
+        curve_func: Callable[[Self, int], None],
+        max_iterations: int,
+    ) -> None:
+        """draws multiple iterations of a curve"""
+        for i in range(1, max_iterations + 1):
+            self.reset()
+            curve_func(self, i)
+            sleep(1)
+        self.t.screen.mainloop()
 
-def iterate_curve(
-    curve_func: Callable[[Curve], None],
-    max_iterations: int,
-    size: float,
-    col_list: list[str],
-    t: Turtle,
-) -> None:
-    """draws multiple iterations of a curve"""
-    for i in range(1, max_iterations + 1):
-        reset(t)
-        curve_func(Curve(i, size, col_list, t))
-        sleep(1)
-
-
-def reset(t: Turtle) -> None:
-    """resets the turtle"""
-    t.reset()
-    t.screen.screensize(canvwidth=500, canvheight=500, bg="black")
-    t.hideturtle()
-    t.speed(0)
+    def reset(self) -> None:
+        """resets the turtle"""
+        self.t.reset()
+        self.t.screen.screensize(canvwidth=500, canvheight=500, bg="black")
+        self.t.hideturtle()
+        self.t.speed(0)
 
 
 def main():
     """main function"""
-    curves: list[Callable[[Curve], None]] = [
+    curves: list[Callable[[Curve, int], None]] = [
         Curve.koch_snowflake,
         Curve.quadratic_koch_curve,
         Curve.cesaro_fractal,
@@ -216,11 +214,9 @@ def main():
         return
 
     rainbow = ["red", "orange", "yellow", "green", "blue", "indigo", "violet"]
-    t = Turtle()
 
-    iterate_curve(curve_func, max_iterations, 500, rainbow, t)
-
-    t.screen.mainloop()
+    curve = Curve(500, rainbow)
+    curve.iterate_curve(curve_func, max_iterations)
 
 
 if __name__ == "__main__":
