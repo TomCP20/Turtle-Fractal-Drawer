@@ -19,9 +19,7 @@ class Curve:
     col_list: list[str]
     t: Turtle
 
-    def koch_snowflake(
-        self,
-    ) -> None:
+    def koch_snowflake(self) -> None:
         """The Koch snowflake"""
         self.t.teleport(-self.length / 2, self.length / 3)
         step_length: float = self.length / (3 ** (self.level - 1))
@@ -138,7 +136,7 @@ class Curve:
         commands = axiom
         pattern: re.Pattern[str] = re.compile("|".join(rules.keys()))
         for _ in range(self.level - 1):
-            commands = pattern.sub(lambda m : rules[m.group(0)], commands)
+            commands = pattern.sub(lambda m: rules[m.group(0)], commands)
         return commands
 
     def l_system_draw(
