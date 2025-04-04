@@ -1,5 +1,6 @@
 """Turtle Fractal Drawer - A Turtle program that draws fractals."""
 
+import sys
 from turtle import Turtle, Vec2D
 from tkinter import simpledialog
 from time import sleep
@@ -59,7 +60,7 @@ class Curve:
 curves: list[Curve] = [
     Curve(
         name="""The Koch snowflake""",
-        _pos=(-1/2, 1/3),
+        _pos=(-1 / 2, 1 / 3),
         _curve_size=lambda level: (3 ** (level - 1)),
         axiom="F++F++F++",
         rules={"F": "F-F++F-F"},
@@ -67,13 +68,13 @@ curves: list[Curve] = [
     ),
     Curve(
         name="""The quadratic Koch curve""",
-        _pos=(-1/2, 0),
+        _pos=(-1 / 2, 0),
         _curve_size=lambda level: (3 ** (level - 1)),
         rules={"F": "F-F+F+F-F"},
     ),
     Curve(
         name="""The Cesàro fractal""",
-        _pos=(-1/2, 0),
+        _pos=(-1 / 2, 0),
         _curve_size=lambda level: (2.5 ** (level - 1)),
         axiom="F++",
         rules={"F": "F-F++F-F"},
@@ -81,20 +82,20 @@ curves: list[Curve] = [
     ),
     Curve(
         name="""The Minkowski sausage""",
-        _pos=(-1/2, 0),
+        _pos=(-1 / 2, 0),
         _curve_size=lambda level: (4 ** (level - 1)),
         rules={"F": "F+F-F-FF+F+F-F"},
     ),
     Curve(
         name="""The Minkowski island""",
-        _pos=(-1/2, 1/2),
+        _pos=(-1 / 2, 1 / 2),
         _curve_size=lambda level: (4 ** (level - 1)),
         axiom="F+F+F+F+",
         rules={"F": "F+F-F-FF+F+F-F"},
     ),
     Curve(
         name="""The Hilbert Curve""",
-        _pos=(-1/2, -1/2),
+        _pos=(-1 / 2, -1 / 2),
         _curve_size=lambda level: ((2**level) - 1),
         axiom="-BF+AFA+FB-",
         rules={"A": "-BF+AFA+FB-", "B": "+AF-BFB-FA+"},
@@ -107,7 +108,7 @@ curves: list[Curve] = [
     ),
     Curve(
         name="""The Sierpiński triangle""",
-        _pos=(-1/2, -1/3),
+        _pos=(-1 / 2, -1 / 3),
         _curve_size=lambda level: (2 ** (level - 1)),
         axiom="F-G-G",
         rules={"F": "F-G+F+G-F", "G": "GG"},
@@ -116,8 +117,8 @@ curves: list[Curve] = [
     Curve(
         name="""The Sierpiński curve""",
         _pos=lambda level: (
-            -1/(2 * ((2 ** (level) - 2) * (1 + sqrt(2)) + 1)),
-            1/2,
+            -1 / (2 * ((2 ** (level) - 2) * (1 + sqrt(2)) + 1)),
+            1 / 2,
         ),
         _curve_size=lambda level: ((2 ** (level) - 2) * (1 + sqrt(2)) + 1),
         axiom="F++XF++F++XF",
@@ -126,14 +127,14 @@ curves: list[Curve] = [
     ),
     Curve(
         name="""The Sierpiński square curve""",
-        _pos=lambda level: (-1/(((2 ** (level + 1) - 3)) / 2), 1/2),
+        _pos=lambda level: (-1 / (((2 ** (level + 1) - 3)) / 2), 1 / 2),
         _curve_size=lambda level: (2 ** (level + 1) - 3),
         axiom="F+XF+F+XF",
         rules={"X": "XF-F+F-XF+F+XF-F+F-X"},
     ),
     Curve(
         name="""The Sierpiński arrowhead curve""",
-        _pos=(-1/2, -1/3),
+        _pos=(-1 / 2, -1 / 3),
         _dir=lambda level: 60 if level % 2 == 0 else 0,
         _curve_size=lambda level: (2 ** (level - 1)),
         axiom="XF",
@@ -142,14 +143,14 @@ curves: list[Curve] = [
     ),
     Curve(
         name="""The Gosper curve""",
-        _pos=(0, 1/4),
+        _pos=(0, 1 / 4),
         _curve_size=lambda level: sqrt(7) ** (level),
         rules={"F": "F+G++G-F--FF-G+", "G": "-F+GG++G+F--F-G"},
         angle=60,
     ),
     Curve(
         name="""The Moore curve""",
-        _pos=lambda level: (-1/((((2**level) - 1)) / 2), -1/2),
+        _pos=lambda level: (-1 / ((((2**level) - 1)) / 2), -1 / 2),
         _dir=90,
         _curve_size=lambda level: ((2**level) - 1),
         axiom="LFL+F+LFL",
@@ -157,7 +158,7 @@ curves: list[Curve] = [
     ),
     Curve(
         name="""The Peano curve""",
-        _pos=(-1/2, -1/2),
+        _pos=(-1 / 2, -1 / 2),
         _dir=90,
         _curve_size=lambda level: ((3**level) - 1),
         axiom="XFYFX+F+YFXFY-F-XFYFX",
@@ -165,7 +166,7 @@ curves: list[Curve] = [
     ),
     Curve(
         name="""fractal (binary) tree""",
-        _pos=(0, -1/2),
+        _pos=(0, -1 / 2),
         _dir=90,
         _curve_size=lambda level: (2 ** (level - 1)) * (2 + sqrt(2)) / 3,
         axiom="F",
@@ -174,7 +175,7 @@ curves: list[Curve] = [
     ),
     Curve(
         name="""fractal (binary) tree with leaves""",
-        _pos=(0, -1/2),
+        _pos=(0, -1 / 2),
         _dir=90,
         _curve_size=lambda level: (2 ** (level - 1)) * (2 + sqrt(2)) / 3,
         axiom="FS",
@@ -183,7 +184,7 @@ curves: list[Curve] = [
     ),
     Curve(
         name="""fractal plant""",
-        _pos=(-1/2, -1/2),
+        _pos=(-1 / 2, -1 / 2),
         _curve_size=lambda level: (1 + sqrt(2)) ** level,
         axiom="-F+[[X]-X]-F[-FX]+X",
         rules={"F": "FF", "X": "F+[[X]-X]-F[-FX]+X"},
@@ -246,8 +247,8 @@ class CurveDrawer:
         self.t.speed(0)
 
 
-def main():
-    """main function"""
+def get_curve():
+    """ask the user for the desired curve"""
     dialog = "What curve do you want to display?\n" + "\n".join(
         f"{i}) {v.name}" for i, v in enumerate(curves, 1)
     )
@@ -256,17 +257,29 @@ def main():
         "Select fractal", dialog, minvalue=1, maxvalue=len(curves)
     )
     if not curvesno:
-        return
-    curve = curves[curvesno - 1]
+        sys.exit()
+    return curves[curvesno - 1]
 
+
+def get_iterations():
+    """ask the user for the desired number of iterations"""
     iterations = simpledialog.askinteger(
         "Max iterations", "How many iterations of the curve do you want?", minvalue=1
     )
     if not iterations:
-        return
+        sys.exit()
+    return iterations
+
+
+def main():
+    """main function"""
+    curve = get_curve()
+
+    iterations = get_iterations()
 
     curve_drawer = CurveDrawer(RAINBOW, curve)
     curve_drawer.iterate_curve(iterations)
+
 
 def test():
     """a function that draws all the curves for testing purposes"""
