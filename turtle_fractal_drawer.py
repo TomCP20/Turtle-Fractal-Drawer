@@ -207,26 +207,28 @@ class CurveDrawer:
         self.t.setheading(self.curve.initial_dir(level))
         rainbow_generator = cycle(self.col_list)
         step_length = self.curve.step_length(level)
-        commands = self.curve.l_system_gen(level)
         stack: list[tuple[Vec2D, float]] = []
-        for c in commands:
-            if c in "FG":
-                self.t.pencolor(next(rainbow_generator))
-                self.t.forward(step_length)
-            elif c == "+":
-                self.t.right(self.curve.angle)
-            elif c == "-":
-                self.t.left(self.curve.angle)
-            elif c == "[":
-                stack.append((self.t.pos(), self.t.heading()))
-            elif c == "]":
-                pos, h = stack.pop()
-                self.t.teleport(*pos)
-                self.t.seth(h)
-            elif c == "S":
-                self.t.showturtle()
-                self.t.stamp()
-                self.t.hideturtle()
+        for command in self.curve.l_system_gen(level):
+            match command:
+                case "F" | "G":
+                    self.t.pencolor(next(rainbow_generator))
+                    self.t.forward(step_length)
+                case "+":
+                    self.t.right(self.curve.angle)
+                case "-":
+                    self.t.left(self.curve.angle)
+                case "[":
+                    stack.append((self.t.pos(), self.t.heading()))
+                case "]":
+                    pos, h = stack.pop()
+                    self.t.teleport(*pos)
+                    self.t.seth(h)
+                case "S":
+                    self.t.showturtle()
+                    self.t.stamp()
+                    self.t.hideturtle()
+                case _:
+                    pass
 
     def iterate_curve(
         self,
