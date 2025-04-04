@@ -1,6 +1,6 @@
 """Turtle Fractal Drawer - A Turtle program that draws fractals."""
 
-from turtle import Turtle
+from turtle import Turtle, Vec2D
 from tkinter import simpledialog
 from time import sleep
 from math import sqrt
@@ -11,6 +11,8 @@ import re
 
 
 LENGTH = 500
+
+RAINBOW = ["red", "orange", "yellow", "green", "blue", "indigo", "violet"]
 
 
 @dataclass(kw_only=True)
@@ -33,18 +35,15 @@ class Curve:
             commands = pattern.sub(lambda m: self.rules[m.group(0)], commands)
         return commands
 
-    def initial_dir(self, level: int) -> tuple[float, float]:
+    def initial_pos(self, level: int) -> Vec2D:
         """The initial position for the turtle"""
         match self._pos:
             case (x, y):
-                pass
+                return LENGTH * Vec2D(x, y)
             case f:
-                x, y = f(level)
-        x = LENGTH / x if x else 0
-        y = LENGTH / y if y else 0
-        return (x, y)
+                return LENGTH * Vec2D(*f(level))
 
-    def initial_angle(self, level: int) -> int:
+    def initial_dir(self, level: int) -> int:
         """The initial position for the turtle"""
         match self._dir:
             case int(a):
@@ -60,7 +59,7 @@ class Curve:
 curves: list[Curve] = [
     Curve(
         name="""The Koch snowflake""",
-        _pos=(-2, 3),
+        _pos=(-1/2, 1/3),
         _curve_size=lambda level: (3 ** (level - 1)),
         axiom="F++F++F++",
         rules={"F": "F-F++F-F"},
@@ -68,13 +67,13 @@ curves: list[Curve] = [
     ),
     Curve(
         name="""The quadratic Koch curve""",
-        _pos=(-2, 0),
+        _pos=(-1/2, 0),
         _curve_size=lambda level: (3 ** (level - 1)),
         rules={"F": "F-F+F+F-F"},
     ),
     Curve(
         name="""The Cesàro fractal""",
-        _pos=(-2, 0),
+        _pos=(-1/2, 0),
         _curve_size=lambda level: (2.5 ** (level - 1)),
         axiom="F++",
         rules={"F": "F-F++F-F"},
@@ -82,20 +81,20 @@ curves: list[Curve] = [
     ),
     Curve(
         name="""The Minkowski sausage""",
-        _pos=(-2, 0),
+        _pos=(-1/2, 0),
         _curve_size=lambda level: (4 ** (level - 1)),
         rules={"F": "F+F-F-FF+F+F-F"},
     ),
     Curve(
         name="""The Minkowski island""",
-        _pos=(-2, 2),
+        _pos=(-1/2, 1/2),
         _curve_size=lambda level: (4 ** (level - 1)),
         axiom="F+F+F+F+",
         rules={"F": "F+F-F-FF+F+F-F"},
     ),
     Curve(
         name="""The Hilbert Curve""",
-        _pos=(-2, -2),
+        _pos=(-1/2, -1/2),
         _curve_size=lambda level: ((2**level) - 1),
         axiom="-BF+AFA+FB-",
         rules={"A": "-BF+AFA+FB-", "B": "+AF-BFB-FA+"},
@@ -108,7 +107,7 @@ curves: list[Curve] = [
     ),
     Curve(
         name="""The Sierpiński triangle""",
-        _pos=(-2, -3),
+        _pos=(-1/2, -1/3),
         _curve_size=lambda level: (2 ** (level - 1)),
         axiom="F-G-G",
         rules={"F": "F-G+F+G-F", "G": "GG"},
@@ -117,8 +116,8 @@ curves: list[Curve] = [
     Curve(
         name="""The Sierpiński curve""",
         _pos=lambda level: (
-            -2 * ((2 ** (level) - 2) * (1 + sqrt(2)) + 1),
-            2,
+            -1/(2 * ((2 ** (level) - 2) * (1 + sqrt(2)) + 1)),
+            1/2,
         ),
         _curve_size=lambda level: ((2 ** (level) - 2) * (1 + sqrt(2)) + 1),
         axiom="F++XF++F++XF",
@@ -127,14 +126,14 @@ curves: list[Curve] = [
     ),
     Curve(
         name="""The Sierpiński square curve""",
-        _pos=lambda level: (-((2 ** (level + 1) - 3)) / 2, 2),
+        _pos=lambda level: (-1/(((2 ** (level + 1) - 3)) / 2), 1/2),
         _curve_size=lambda level: (2 ** (level + 1) - 3),
         axiom="F+XF+F+XF",
         rules={"X": "XF-F+F-XF+F+XF-F+F-X"},
     ),
     Curve(
         name="""The Sierpiński arrowhead curve""",
-        _pos=(-2, -3),
+        _pos=(-1/2, -1/3),
         _dir=lambda level: 60 if level % 2 == 0 else 0,
         _curve_size=lambda level: (2 ** (level - 1)),
         axiom="XF",
@@ -143,14 +142,14 @@ curves: list[Curve] = [
     ),
     Curve(
         name="""The Gosper curve""",
-        _pos=(0, 4),
+        _pos=(0, 1/4),
         _curve_size=lambda level: sqrt(7) ** (level),
         rules={"F": "F+G++G-F--FF-G+", "G": "-F+GG++G+F--F-G"},
         angle=60,
     ),
     Curve(
         name="""The Moore curve""",
-        _pos=lambda level: (-(((2**level) - 1)) / 2, -2),
+        _pos=lambda level: (-1/((((2**level) - 1)) / 2), -1/2),
         _dir=90,
         _curve_size=lambda level: ((2**level) - 1),
         axiom="LFL+F+LFL",
@@ -158,7 +157,7 @@ curves: list[Curve] = [
     ),
     Curve(
         name="""The Peano curve""",
-        _pos=(-2, -2),
+        _pos=(-1/2, -1/2),
         _dir=90,
         _curve_size=lambda level: ((3**level) - 1),
         axiom="XFYFX+F+YFXFY-F-XFYFX",
@@ -166,7 +165,16 @@ curves: list[Curve] = [
     ),
     Curve(
         name="""fractal (binary) tree""",
-        _pos=(0, -2),
+        _pos=(0, -1/2),
+        _dir=90,
+        _curve_size=lambda level: (2 ** (level - 1)) * (2 + sqrt(2)) / 3,
+        axiom="F",
+        rules={"F": "G[-F]+F", "G": "GG"},
+        angle=45,
+    ),
+    Curve(
+        name="""fractal (binary) tree with leaves""",
+        _pos=(0, -1/2),
         _dir=90,
         _curve_size=lambda level: (2 ** (level - 1)) * (2 + sqrt(2)) / 3,
         axiom="FS",
@@ -175,7 +183,7 @@ curves: list[Curve] = [
     ),
     Curve(
         name="""fractal plant""",
-        _pos=(-2, -2),
+        _pos=(-1/2, -1/2),
         _curve_size=lambda level: (1 + sqrt(2)) ** level,
         axiom="-F+[[X]-X]-F[-FX]+X",
         rules={"F": "FF", "X": "F+[[X]-X]-F[-FX]+X"},
@@ -194,13 +202,12 @@ class CurveDrawer:
 
     def l_system_draw(self, level: int) -> None:
         """draws l-system commands using the turtle"""
-        x, y = self.curve.initial_dir(level)
-        self.t.teleport(x, y)
-        self.t.setheading(self.curve.initial_angle(level))
+        self.t.teleport(*self.curve.initial_pos(level))
+        self.t.setheading(self.curve.initial_dir(level))
         rainbow_generator = cycle(self.col_list)
         step_length = self.curve.step_length(level)
         commands = self.curve.l_system_gen(level)
-        stack: list[tuple[tuple[float, float], float]] = []
+        stack: list[tuple[Vec2D, float]] = []
         for c in commands:
             if c in "FG":
                 self.t.pencolor(next(rainbow_generator))
@@ -258,10 +265,18 @@ def main():
     if not iterations:
         return
 
-    rainbow = ["red", "orange", "yellow", "green", "blue", "indigo", "violet"]
-
-    curve_drawer = CurveDrawer(rainbow, curve)
+    curve_drawer = CurveDrawer(RAINBOW, curve)
     curve_drawer.iterate_curve(iterations)
+
+def test():
+    """a function that draws all the curves for testing purposes"""
+    curve_drawer = CurveDrawer(RAINBOW, curves[0])
+    for curve in curves:
+        print(curve.name)
+        curve_drawer.curve = curve
+        curve_drawer.reset()
+        curve_drawer.l_system_draw(4)
+        sleep(1)
 
 
 if __name__ == "__main__":
