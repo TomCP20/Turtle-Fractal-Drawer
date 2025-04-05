@@ -106,6 +106,20 @@ curves: list[Curve] = [
         rules={"F": "F-G", "G": "F+G"},
     ),
     Curve(
+        name="""The Twindragon Curve""",
+        _pos=(0, 0),
+        _curve_size=lambda level: (sqrt(2) * (level ** sqrt(2))),
+        axiom="FX+FX+",
+        rules={"X": "X+YF", "Y": "FX-Y"},
+    ),
+    Curve(
+        name="""The Terdragon Curve""",
+        _pos=(0, 0),
+        _curve_size=lambda level: ((level+1)**3-(level+1))/2,
+        axiom="F+F-F",
+        rules={"F": "F+F-F"},
+    ),
+    Curve(
         name="""The Sierpiński triangle""",
         _pos=(-1 / 2, -1 / 3),
         _curve_size=lambda level: (2 ** (level - 1)),
