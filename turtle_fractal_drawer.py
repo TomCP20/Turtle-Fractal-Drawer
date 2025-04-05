@@ -198,6 +198,14 @@ curves: list[Curve] = [
         rules={"F": "FF", "X": "F+[[X]-X]-F[-FX]+X"},
         angle=45,
     ),
+    Curve(
+        name="""The Lévy C curve""",
+        _pos=(-1 / 2, 1 / 2),
+        _curve_size=lambda level: (sqrt(2))**(level-1),
+        axiom="F",
+        rules={"F": "+F--F+"},
+        angle=45,
+    ),
 ]
 
 
