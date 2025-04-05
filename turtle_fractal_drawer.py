@@ -165,6 +165,14 @@ curves: list[Curve] = [
         rules={"X": "XFYFX+F+YFXFY-F-XFYFX", "Y": "YFXFY-F-XFYFX+F+YFXFY"},
     ),
     Curve(
+        name="""The Peano curve (diagonal)""",
+        _pos=(-1 / 2, -1 / 2),
+        _heading=45,
+        _curve_size=lambda level: (sqrt(2)/2)*((3**(level- 1))),
+        axiom="F",
+        rules={"F": "F+F-F-FF-F-F-FF"},
+    ),
+    Curve(
         name="""fractal (binary) tree""",
         _pos=(0, -1 / 2),
         _heading=90,
