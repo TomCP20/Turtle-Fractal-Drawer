@@ -219,6 +219,20 @@ curves: list[Curve] = [
         rules={"F": "+F--F+"},
         angle=45,
     ),
+    Curve(
+        name="""The Penrose Tiling""",
+        _pos=(0, 0),
+        _curve_size=lambda level:  (2) ** (level),
+        axiom="[+YF--ZF[---WF--XF]+]++[+YF--ZF[---WF--XF]+]++[+YF--ZF[---WF--XF]+]++[+YF--ZF[---WF--XF]+]++[+YF--ZF[---WF--XF]+]",
+        rules={
+            "W": "YF++ZF----XF[-YF----WF]++",
+            "X": "+YF--ZF[---WF--XF]+",
+            "Y": "-WF++XF[+++YF++ZF]-",
+            "Z": "--YF++++WF[+ZF++++XF]--XF",
+            "F": "",
+        },
+        angle=36,
+    ),
 ]
 
 
