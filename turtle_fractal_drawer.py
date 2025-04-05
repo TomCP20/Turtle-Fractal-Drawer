@@ -21,7 +21,7 @@ class Curve:
     """represents the propeties of a curve"""
 
     name: str
-    _pos: tuple[float, float] | Callable[[int], tuple[float, float]]
+    _pos: tuple[float, float] | Callable[[int], tuple[float, float]] = (-1 / 2, -1 / 2)
     _heading: int | Callable[[int], int] = 0
     _curve_size: Callable[[int], float]
     axiom: str = "F"
@@ -95,7 +95,6 @@ curves: list[Curve] = [
     ),
     Curve(
         name="""The Hilbert Curve""",
-        _pos=(-1 / 2, -1 / 2),
         _curve_size=lambda level: ((2**level) - 1),
         axiom="-BF+AFA+FB-",
         rules={"A": "-BF+AFA+FB-", "B": "+AF-BFB-FA+"},
@@ -158,7 +157,6 @@ curves: list[Curve] = [
     ),
     Curve(
         name="""The Peano curve""",
-        _pos=(-1 / 2, -1 / 2),
         _heading=90,
         _curve_size=lambda level: ((3**level) - 1),
         axiom="XFYFX+F+YFXFY-F-XFYFX",
@@ -166,9 +164,8 @@ curves: list[Curve] = [
     ),
     Curve(
         name="""The Peano curve (diagonal)""",
-        _pos=(-1 / 2, -1 / 2),
         _heading=45,
-        _curve_size=lambda level: (sqrt(2)/2)*((3**(level- 1))),
+        _curve_size=lambda level: (sqrt(2) / 2) * ((3 ** (level - 1))),
         axiom="F",
         rules={"F": "F+F-F-FF-F-F-FF"},
     ),
@@ -192,7 +189,6 @@ curves: list[Curve] = [
     ),
     Curve(
         name="""fractal plant""",
-        _pos=(-1 / 2, -1 / 2),
         _curve_size=lambda level: (1 + sqrt(2)) ** level,
         axiom="-F+[[X]-X]-F[-FX]+X",
         rules={"F": "FF", "X": "F+[[X]-X]-F[-FX]+X"},
@@ -201,16 +197,15 @@ curves: list[Curve] = [
     Curve(
         name="""The Lévy C curve""",
         _pos=(-1 / 2, 1 / 2),
-        _curve_size=lambda level: (sqrt(2))**(level-1),
+        _curve_size=lambda level: (sqrt(2)) ** (level - 1),
         axiom="F",
         rules={"F": "+F--F+"},
         angle=45,
     ),
     Curve(
         name="""The Sierpiński Carpet""",
-        _pos=(-1 / 2, -1 / 2),
         _heading=45,
-        _curve_size=lambda level: (sqrt(2)/2)*((3**(level- 1))),
+        _curve_size=lambda level: (sqrt(2) / 2) * ((3 ** (level - 1))),
         axiom="F",
         rules={"F": "F+F-F-F-f+F+F+F-F", "f": "fff"},
     ),
