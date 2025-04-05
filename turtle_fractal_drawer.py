@@ -236,6 +236,9 @@ class CurveDrawer:
         self.t.hideturtle()
         self.t.speed(0)
 
+    def __del__(self):
+        self.t.clear()
+
     def l_system_draw(self, level: int) -> None:
         """draws l-system commands using the turtle"""
         self.t.clear()
@@ -326,12 +329,11 @@ def main():
     curve_drawer.iterate_curve(iterations)
 
 
-def test(level: int):
+def test(level: int = 2):
     """a function that draws all the curves for testing purposes"""
-    curve_drawer = CurveDrawer(RAINBOW, curves[0])
     for curve in curves:
+        curve_drawer = CurveDrawer(RAINBOW, curve)
         print(curve.name)
-        curve_drawer.curve = curve
         curve_drawer.l_system_draw(level)
         sleep(1)
 
