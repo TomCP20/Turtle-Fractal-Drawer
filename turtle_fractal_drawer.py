@@ -229,18 +229,18 @@ class CurveDrawer:
     col_list: list[str]
     curve: Curve
     t: Turtle = field(init=False, default_factory=Turtle)
+    stack: list[tuple[Vec2D, float]] = field(init=False, default_factory=list)
 
     def l_system_draw(self, level: int) -> None:
         """draws l-system commands using the turtle"""
         self.t.teleport(*self.curve.initial_pos(level))
         self.t.setheading(self.curve.initial_dir(level))
-        rainbow_generator = cycle(self.col_list)
+        col_generator = cycle(self.col_list)
         step_length = self.curve.step_length(level)
-        stack: list[tuple[Vec2D, float]] = []
         for command in self.curve.l_system_gen(level):
             match command:
                 case "F" | "G":
-                    self.t.pencolor(next(rainbow_generator))
+                    self.t.pencolor(next(col_generator))
                     self.t.forward(step_length)
                 case "f":
                     self.t.penup()
@@ -251,15 +251,11 @@ class CurveDrawer:
                 case "-":
                     self.t.left(self.curve.angle)
                 case "[":
-                    stack.append((self.t.pos(), self.t.heading()))
+                    self.push()
                 case "]":
-                    pos, h = stack.pop()
-                    self.t.teleport(*pos)
-                    self.t.seth(h)
+                    self.pop()
                 case "S":
-                    self.t.showturtle()
-                    self.t.stamp()
-                    self.t.hideturtle()
+                    self.stamp()
                 case _:
                     pass
 
@@ -280,6 +276,22 @@ class CurveDrawer:
         self.t.screen.screensize(canvwidth=500, canvheight=500, bg="black")
         self.t.hideturtle()
         self.t.speed(0)
+
+    def push(self) -> None:
+        """push the turtles state to the stack"""
+        self.stack.append((self.t.pos(), self.t.heading()))
+
+    def pop(self) -> None:
+        """pop the turtle state from the stack"""
+        pos, h = self.stack.pop()
+        self.t.teleport(*pos)
+        self.t.seth(h)
+
+    def stamp(self) -> None:
+        """stamps the turtle onto the canvas"""
+        self.t.showturtle()
+        self.t.stamp()
+        self.t.hideturtle()
 
 
 def get_curve():
