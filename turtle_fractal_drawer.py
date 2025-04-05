@@ -22,7 +22,7 @@ class Curve:
 
     name: str
     _pos: tuple[float, float] | Callable[[int], tuple[float, float]]
-    _dir: int | Callable[[int], int] = 0
+    _heading: int | Callable[[int], int] = 0
     _curve_size: Callable[[int], float]
     axiom: str = "F"
     rules: dict[str, str]
@@ -46,7 +46,7 @@ class Curve:
 
     def initial_dir(self, level: int) -> int:
         """The initial position for the turtle"""
-        match self._dir:
+        match self._heading:
             case int(a):
                 return a
             case f:
@@ -127,7 +127,7 @@ curves: list[Curve] = [
     ),
     Curve(
         name="""The Sierpiński square curve""",
-        _pos=lambda level: (-1 / (((2 ** (level + 1) - 3)) / 2), 1 / 2),
+        _pos=lambda level: (-1 / (((2 ** (level + 1) - 3))) / 2, 1 / 2),
         _curve_size=lambda level: (2 ** (level + 1) - 3),
         axiom="F+XF+F+XF",
         rules={"X": "XF-F+F-XF+F+XF-F+F-X"},
@@ -135,7 +135,7 @@ curves: list[Curve] = [
     Curve(
         name="""The Sierpiński arrowhead curve""",
         _pos=(-1 / 2, -1 / 3),
-        _dir=lambda level: 60 if level % 2 == 0 else 0,
+        _heading=lambda level: 60 if level % 2 == 0 else 0,
         _curve_size=lambda level: (2 ** (level - 1)),
         axiom="XF",
         rules={"X": "YF+XF+Y", "Y": "XF-YF-X"},
@@ -151,7 +151,7 @@ curves: list[Curve] = [
     Curve(
         name="""The Moore curve""",
         _pos=lambda level: (-1 / ((((2**level) - 1)) / 2), -1 / 2),
-        _dir=90,
+        _heading=90,
         _curve_size=lambda level: ((2**level) - 1),
         axiom="LFL+F+LFL",
         rules={"L": "-RF+LFL+FR-", "R": "+LF-RFR-FL+"},
@@ -159,7 +159,7 @@ curves: list[Curve] = [
     Curve(
         name="""The Peano curve""",
         _pos=(-1 / 2, -1 / 2),
-        _dir=90,
+        _heading=90,
         _curve_size=lambda level: ((3**level) - 1),
         axiom="XFYFX+F+YFXFY-F-XFYFX",
         rules={"X": "XFYFX+F+YFXFY-F-XFYFX", "Y": "YFXFY-F-XFYFX+F+YFXFY"},
@@ -167,7 +167,7 @@ curves: list[Curve] = [
     Curve(
         name="""fractal (binary) tree""",
         _pos=(0, -1 / 2),
-        _dir=90,
+        _heading=90,
         _curve_size=lambda level: (2 ** (level - 1)) * (2 + sqrt(2)) / 3,
         axiom="F",
         rules={"F": "G[-F]+F", "G": "GG"},
@@ -176,7 +176,7 @@ curves: list[Curve] = [
     Curve(
         name="""fractal (binary) tree with leaves""",
         _pos=(0, -1 / 2),
-        _dir=90,
+        _heading=90,
         _curve_size=lambda level: (2 ** (level - 1)) * (2 + sqrt(2)) / 3,
         axiom="FS",
         rules={"F": "G[-FS]+F", "G": "GG"},
