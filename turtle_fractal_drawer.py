@@ -169,7 +169,7 @@ curves: list[Curve] = [
     ),
     Curve(
         name="""The Moore curve""",
-        _pos=lambda level: (-1 / ((((2**level) - 1)) / 2), -1 / 2),
+        _pos=lambda level: (-1 / ((((2**level) - 1))) / 2, -1 / 2),
         _heading=90,
         _curve_size=lambda level: ((2**level) - 1),
         axiom="LFL+F+LFL",
@@ -231,8 +231,14 @@ class CurveDrawer:
     t: Turtle = field(init=False, default_factory=Turtle)
     stack: list[tuple[Vec2D, float]] = field(init=False, default_factory=list)
 
+    def __post_init__(self):
+        self.t.screen.screensize(canvwidth=500, canvheight=500, bg="black")
+        self.t.hideturtle()
+        self.t.speed(0)
+
     def l_system_draw(self, level: int) -> None:
         """draws l-system commands using the turtle"""
+        self.t.clear()
         self.t.teleport(*self.curve.initial_pos(level))
         self.t.setheading(self.curve.initial_dir(level))
         col_generator = cycle(self.col_list)
@@ -265,17 +271,9 @@ class CurveDrawer:
     ) -> None:
         """draws multiple iterations of a curve"""
         for i in range(1, iterations + 1):
-            self.reset()
             self.l_system_draw(i)
             sleep(1)
         self.t.screen.mainloop()
-
-    def reset(self) -> None:
-        """resets the turtle"""
-        self.t.reset()
-        self.t.screen.screensize(canvwidth=500, canvheight=500, bg="black")
-        self.t.hideturtle()
-        self.t.speed(0)
 
     def push(self) -> None:
         """push the turtles state to the stack"""
@@ -328,14 +326,13 @@ def main():
     curve_drawer.iterate_curve(iterations)
 
 
-def test():
+def test(level: int):
     """a function that draws all the curves for testing purposes"""
     curve_drawer = CurveDrawer(RAINBOW, curves[0])
     for curve in curves:
         print(curve.name)
         curve_drawer.curve = curve
-        curve_drawer.reset()
-        curve_drawer.l_system_draw(4)
+        curve_drawer.l_system_draw(level)
         sleep(1)
 
 
