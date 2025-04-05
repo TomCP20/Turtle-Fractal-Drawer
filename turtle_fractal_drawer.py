@@ -155,6 +155,13 @@ curves: list[Curve] = [
         angle=60,
     ),
     Curve(
+        name="""The Sierpiński Carpet""",
+        _heading=45,
+        _curve_size=lambda level: (sqrt(2) / 2) * ((3 ** (level - 1))),
+        axiom="F",
+        rules={"F": "F+F-F-F-f+F+F+F-F", "f": "fff"},
+    ),
+    Curve(
         name="""The Gosper curve""",
         _pos=(0, 1 / 4),
         _curve_size=lambda level: sqrt(7) ** (level),
@@ -215,13 +222,6 @@ curves: list[Curve] = [
         axiom="F",
         rules={"F": "+F--F+"},
         angle=45,
-    ),
-    Curve(
-        name="""The Sierpiński Carpet""",
-        _heading=45,
-        _curve_size=lambda level: (sqrt(2) / 2) * ((3 ** (level - 1))),
-        axiom="F",
-        rules={"F": "F+F-F-F-f+F+F+F-F", "f": "fff"},
     ),
 ]
 
