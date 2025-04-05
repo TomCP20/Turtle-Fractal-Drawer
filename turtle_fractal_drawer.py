@@ -115,7 +115,7 @@ curves: list[Curve] = [
     Curve(
         name="""The Terdragon Curve""",
         _pos=(0, 0),
-        _curve_size=lambda level: ((level+1)**3-(level+1))/2,
+        _curve_size=lambda level: ((level + 1) ** 3 - (level + 1)) / 2,
         axiom="F+F-F",
         rules={"F": "F+F-F"},
     ),
@@ -158,7 +158,6 @@ curves: list[Curve] = [
         name="""The Sierpiński Carpet""",
         _heading=45,
         _curve_size=lambda level: (sqrt(2) / 2) * ((3 ** (level - 1))),
-        axiom="F",
         rules={"F": "F+F-F-F-f+F+F+F-F", "f": "fff"},
     ),
     Curve(
@@ -187,7 +186,6 @@ curves: list[Curve] = [
         name="""The Peano curve (diagonal)""",
         _heading=45,
         _curve_size=lambda level: (sqrt(2) / 2) * ((3 ** (level - 1))),
-        axiom="F",
         rules={"F": "F+F-F-FF-F-F-FF"},
     ),
     Curve(
@@ -195,7 +193,6 @@ curves: list[Curve] = [
         _pos=(0, -1 / 2),
         _heading=90,
         _curve_size=lambda level: (2 ** (level - 1)) * (2 + sqrt(2)) / 3,
-        axiom="F",
         rules={"F": "G[-F]+F", "G": "GG"},
         angle=45,
     ),
@@ -219,7 +216,6 @@ curves: list[Curve] = [
         name="""The Lévy C curve""",
         _pos=(-1 / 2, 1 / 2),
         _curve_size=lambda level: (sqrt(2)) ** (level - 1),
-        axiom="F",
         rules={"F": "+F--F+"},
         angle=45,
     ),
