@@ -206,6 +206,14 @@ curves: list[Curve] = [
         rules={"F": "+F--F+"},
         angle=45,
     ),
+    Curve(
+        name="""The Sierpiński Carpet""",
+        _pos=(-1 / 2, -1 / 2),
+        _heading=45,
+        _curve_size=lambda level: (sqrt(2)/2)*((3**(level- 1))),
+        axiom="F",
+        rules={"F": "F+F-F-F-f+F+F+F-F", "f": "fff"},
+    ),
 ]
 
 
@@ -229,6 +237,10 @@ class CurveDrawer:
                 case "F" | "G":
                     self.t.pencolor(next(rainbow_generator))
                     self.t.forward(step_length)
+                case "f":
+                    self.t.penup()
+                    self.t.forward(step_length)
+                    self.t.pendown()
                 case "+":
                     self.t.right(self.curve.angle)
                 case "-":
