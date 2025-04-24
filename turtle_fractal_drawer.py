@@ -2,7 +2,7 @@
 
 import sys
 from turtle import Turtle, Vec2D
-from tkinter import simpledialog
+from tkinter import Button, Label, OptionMenu, StringVar, Tk, simpledialog
 from time import sleep
 from math import sqrt
 from collections.abc import Callable
@@ -222,7 +222,7 @@ curves: list[Curve] = [
     Curve(
         name="""The Penrose Tiling""",
         _pos=(0, 0),
-        _curve_size=lambda level:  (2) ** (level),
+        _curve_size=lambda level: (2) ** (level),
         axiom="[+YF--ZF[---WF--XF]+]++[+YF--ZF[---WF--XF]+]++[+YF--ZF[---WF--XF]+]++[+YF--ZF[---WF--XF]+]++[+YF--ZF[---WF--XF]+]",
         rules={
             "W": "YF++ZF----XF[-YF----WF]++",
@@ -311,16 +311,29 @@ class CurveDrawer:
 
 def get_curve():
     """ask the user for the desired curve"""
-    dialog = "What curve do you want to display?\n" + "\n".join(
-        f"{i}) {v.name}" for i, v in enumerate(curves, 1)
-    )
 
-    curvesno = simpledialog.askinteger(
-        "Select fractal", dialog, minvalue=1, maxvalue=len(curves)
-    )
-    if not curvesno:
-        sys.exit()
-    return curves[curvesno - 1]
+    root = Tk()
+    root.title("Select fractal")
+    w = 250
+    h = 100
+    sw = root.winfo_screenwidth()
+    sh = root.winfo_screenheight()
+    x = int((sw / 2) - (w / 2))
+    y = int((sh / 2) - (h / 2))
+    root.geometry(f"{w}x{h}+{x}+{y}")
+    root.geometry()
+    Label(root, text="What curve do you want to display?").pack()
+    selected_curve_name = StringVar(value=curves[0].name)
+    OptionMenu(root, selected_curve_name, *[curve.name for curve in curves]).pack()
+    Button(root, text="Submit", command=root.destroy).pack()
+    root.protocol("WM_DELETE_WINDOW", sys.exit)
+    root.mainloop()
+
+    for curve in curves:
+        if curve.name == selected_curve_name.get():
+            return curve
+
+    sys.exit()
 
 
 def get_iterations():
