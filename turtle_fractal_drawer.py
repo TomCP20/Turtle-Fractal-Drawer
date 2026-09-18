@@ -243,10 +243,10 @@ class CurveDrawer:
     col_list: list[str]
     curve: Curve
     t: Turtle = field(init=False, default_factory=Turtle)
-    stack: list[tuple[Vec2D, float]] = field(init=False, default_factory=list)
+    stack: list[tuple[Vec2D, float]] = field(init=False, default_factory=list[tuple[Vec2D, float]])
 
     def __post_init__(self):
-        self.t.screen.screensize(canvwidth=500, canvheight=500, bg="black")
+        self.t.screen.screensize(canvwidth=LENGTH, canvheight=LENGTH, bg="black")
         self.t.hideturtle()
         self.t.speed(0)
 
