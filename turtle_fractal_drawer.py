@@ -1,17 +1,13 @@
 """Turtle Fractal Drawer - A Turtle program that draws fractals."""
 
+from math import cos, radians, sin
 import sys
 from turtle import Turtle, Vec2D
 from tkinter import Button, Label, OptionMenu, StringVar, Tk, simpledialog
 from time import sleep
-from math import sqrt
-from collections.abc import Callable
 from itertools import cycle
 from dataclasses import dataclass, field
 import re
-
-
-LENGTH = 500
 
 RAINBOW = ["red", "orange", "yellow", "green", "blue", "indigo", "violet"]
 
@@ -21,9 +17,7 @@ class Curve:
     """represents the propeties of a curve"""
 
     name: str
-    _pos: tuple[float, float] | Callable[[int], tuple[float, float]] = (-1 / 2, -1 / 2)
-    _heading: int | Callable[[int], int] = 0
-    _curve_size: Callable[[int], float]
+    heading: int = 0
     axiom: str = "F"
     rules: dict[str, str]
     angle: float = 90
@@ -36,193 +30,128 @@ class Curve:
             commands = pattern.sub(lambda m: self.rules[m.group(0)], commands)
         return commands
 
-    def initial_pos(self, level: int) -> Vec2D:
-        """The initial position for the turtle"""
-        match self._pos:
-            case (x, y):
-                return LENGTH * Vec2D(x, y)
-            case f:
-                return LENGTH * Vec2D(*f(level))
-
-    def initial_dir(self, level: int) -> int:
-        """The initial position for the turtle"""
-        match self._heading:
-            case int(a):
-                return a
-            case f:
-                return f(level)
-
-    def step_length(self, level: int) -> float:
-        """The initial position for the turtle"""
-        return LENGTH / self._curve_size(level)
-
 
 curves: list[Curve] = [
     Curve(
         name="""The Koch snowflake""",
-        _pos=(-1 / 2, 1 / 3),
-        _curve_size=lambda level: (3 ** (level - 1)),
         axiom="F++F++F++",
         rules={"F": "F-F++F-F"},
         angle=60,
     ),
     Curve(
         name="""The quadratic Koch curve""",
-        _pos=(-1 / 2, 0),
-        _curve_size=lambda level: (3 ** (level - 1)),
         rules={"F": "F-F+F+F-F"},
     ),
     Curve(
         name="""The Cesàro fractal""",
-        _pos=(-1 / 2, 0),
-        _curve_size=lambda level: (2.5 ** (level - 1)),
         axiom="F++",
         rules={"F": "F-F++F-F"},
         angle=75.52,
     ),
     Curve(
         name="""The Minkowski sausage""",
-        _pos=(-1 / 2, 0),
-        _curve_size=lambda level: (4 ** (level - 1)),
         rules={"F": "F+F-F-FF+F+F-F"},
     ),
     Curve(
         name="""The Minkowski island""",
-        _pos=(-1 / 2, 1 / 2),
-        _curve_size=lambda level: (4 ** (level - 1)),
         axiom="F+F+F+F+",
         rules={"F": "F+F-F-FF+F+F-F"},
     ),
     Curve(
         name="""The Hilbert Curve""",
-        _curve_size=lambda level: ((2**level) - 1),
         axiom="-BF+AFA+FB-",
         rules={"A": "-BF+AFA+FB-", "B": "+AF-BFB-FA+"},
     ),
     Curve(
         name="""The Dragon Curve""",
-        _pos=(0, 0),
-        _curve_size=lambda level: (sqrt(2) * (level ** sqrt(2))),
         rules={"F": "F-G", "G": "F+G"},
     ),
     Curve(
         name="""The Twindragon Curve""",
-        _pos=(0, 0),
-        _curve_size=lambda level: (sqrt(2) * (level ** sqrt(2))),
         axiom="FX+FX+",
         rules={"X": "X+YF", "Y": "FX-Y"},
     ),
     Curve(
         name="""The Terdragon Curve""",
-        _pos=(0, 0),
-        _curve_size=lambda level: ((level + 1) ** 3 - (level + 1)) / 2,
         axiom="F+F-F",
         rules={"F": "F+F-F"},
     ),
     Curve(
         name="""The Sierpiński triangle""",
-        _pos=(-1 / 2, -1 / 3),
-        _curve_size=lambda level: (2 ** (level - 1)),
         axiom="F-G-G",
         rules={"F": "F-G+F+G-F", "G": "GG"},
         angle=120,
     ),
     Curve(
         name="""The Sierpiński curve""",
-        _pos=lambda level: (
-            -1 / (2 * ((2 ** (level) - 2) * (1 + sqrt(2)) + 1)),
-            1 / 2,
-        ),
-        _curve_size=lambda level: ((2 ** (level) - 2) * (1 + sqrt(2)) + 1),
         axiom="F++XF++F++XF",
         rules={"X": "XF-G-XF++F++XF-G-X"},
         angle=45,
     ),
     Curve(
         name="""The Sierpiński square curve""",
-        _pos=lambda level: (-1 / (((2 ** (level + 1) - 3))) / 2, 1 / 2),
-        _curve_size=lambda level: (2 ** (level + 1) - 3),
         axiom="F+XF+F+XF",
         rules={"X": "XF-F+F-XF+F+XF-F+F-X"},
     ),
     Curve(
         name="""The Sierpiński arrowhead curve""",
-        _pos=(-1 / 2, -1 / 3),
-        _heading=lambda level: 60 if level % 2 == 0 else 0,
-        _curve_size=lambda level: (2 ** (level - 1)),
         axiom="XF",
         rules={"X": "YF+XF+Y", "Y": "XF-YF-X"},
         angle=60,
     ),
     Curve(
         name="""The Sierpiński Carpet""",
-        _heading=45,
-        _curve_size=lambda level: (sqrt(2) / 2) * ((3 ** (level - 1))),
+        heading=45,
         rules={"F": "F+F-F-F-f+F+F+F-F", "f": "fff"},
     ),
     Curve(
         name="""The Gosper curve""",
-        _pos=(0, 1 / 4),
-        _curve_size=lambda level: sqrt(7) ** (level),
         rules={"F": "F+G++G-F--FF-G+", "G": "-F+GG++G+F--F-G"},
         angle=60,
     ),
     Curve(
         name="""The Moore curve""",
-        _pos=lambda level: (-1 / ((((2**level) - 1))) / 2, -1 / 2),
-        _heading=90,
-        _curve_size=lambda level: ((2**level) - 1),
+        heading=90,
         axiom="LFL+F+LFL",
         rules={"L": "-RF+LFL+FR-", "R": "+LF-RFR-FL+"},
     ),
     Curve(
         name="""The Peano curve""",
-        _heading=90,
-        _curve_size=lambda level: ((3**level) - 1),
+        heading=90,
         axiom="XFYFX+F+YFXFY-F-XFYFX",
         rules={"X": "XFYFX+F+YFXFY-F-XFYFX", "Y": "YFXFY-F-XFYFX+F+YFXFY"},
     ),
     Curve(
         name="""The Peano curve (diagonal)""",
-        _heading=45,
-        _curve_size=lambda level: (sqrt(2) / 2) * ((3 ** (level - 1))),
+        heading=45,
         rules={"F": "F+F-F-FF-F-F-FF"},
     ),
     Curve(
         name="""fractal (binary) tree""",
-        _pos=(0, -1 / 2),
-        _heading=90,
-        _curve_size=lambda level: (2 ** (level - 1)) * (2 + sqrt(2)) / 3,
+        heading=90,
         rules={"F": "G[-F]+F", "G": "GG"},
         angle=45,
     ),
     Curve(
         name="""fractal (binary) tree with leaves""",
-        _pos=(0, -1 / 2),
-        _heading=90,
-        _curve_size=lambda level: (2 ** (level - 1)) * (2 + sqrt(2)) / 3,
+        heading=90,
         axiom="FS",
         rules={"F": "G[-FS]+F", "G": "GG"},
         angle=45,
     ),
     Curve(
         name="""fractal plant""",
-        _curve_size=lambda level: (1 + sqrt(2)) ** level,
         axiom="-F+[[X]-X]-F[-FX]+X",
         rules={"F": "FF", "X": "F+[[X]-X]-F[-FX]+X"},
         angle=45,
     ),
     Curve(
         name="""The Lévy C curve""",
-        _pos=(-1 / 2, 1 / 2),
-        _curve_size=lambda level: (sqrt(2)) ** (level - 1),
         rules={"F": "+F--F+"},
         angle=45,
     ),
     Curve(
         name="""The Penrose Tiling""",
-        _pos=(0, 0),
-        _curve_size=lambda level: (2) ** (level),
         axiom="[+YF--ZF[---WF--XF]+]++[+YF--ZF[---WF--XF]+]++[+YF--ZF[---WF--XF]+]++[+YF--ZF[---WF--XF]+]++[+YF--ZF[---WF--XF]+]",
         rules={
             "W": "YF++ZF----XF[-YF----WF]++",
@@ -243,31 +172,35 @@ class CurveDrawer:
     col_list: list[str]
     curve: Curve
     t: Turtle = field(init=False, default_factory=Turtle)
-    stack: list[tuple[Vec2D, float]] = field(init=False, default_factory=list[tuple[Vec2D, float]])
+    stack: list[tuple[Vec2D, float]] = field(
+        init=False, default_factory=list[tuple[Vec2D, float]]
+    )
 
     def __post_init__(self):
-        self.t.screen.screensize(canvwidth=LENGTH, canvheight=LENGTH, bg="black")
-        self.t.hideturtle()
-        self.t.speed(0)
+        self.t.screen.screensize(canvwidth=400, canvheight=400, bg="black")
+        self.t.screen.cv._rootwindow.resizable(False, False)  # type: ignore
 
     def __del__(self):
         self.t.clear()
 
     def l_system_draw(self, level: int) -> None:
         """draws l-system commands using the turtle"""
+        commands = self.curve.l_system_gen(level)
         self.t.clear()
-        self.t.teleport(*self.curve.initial_pos(level))
-        self.t.setheading(self.curve.initial_dir(level))
+        self.t.screen.setworldcoordinates(*self.get_world_coords(commands))
+        self.t.hideturtle()
+        self.t.speed(0)
+        self.t.setheading(self.curve.heading)
+        self.t.teleport(0, 0)
         col_generator = cycle(self.col_list)
-        step_length = self.curve.step_length(level)
-        for command in self.curve.l_system_gen(level):
+        for command in commands:
             match command:
                 case "F" | "G":
                     self.t.pencolor(next(col_generator))
-                    self.t.forward(step_length)
+                    self.t.forward(1)
                 case "f":
                     self.t.penup()
-                    self.t.forward(step_length)
+                    self.t.forward(1)
                     self.t.pendown()
                 case "+":
                     self.t.right(self.curve.angle)
@@ -281,6 +214,44 @@ class CurveDrawer:
                     self.stamp()
                 case _:
                     pass
+
+    def get_world_coords(self, commands: str) -> tuple[float, float, float, float]:
+        """simulates the turtle to calculate world coordinates"""
+        minx = 0
+        miny = 0
+        maxx = 0
+        maxy = 0
+        heading: float = self.curve.heading
+        x = 0
+        y = 0
+        stack: list[tuple[float, float, float]] = []
+        for command in commands:
+            match command:
+                case "F" | "G" | "f":
+                    x += cos(radians(heading))
+                    y += sin(radians(heading))
+                case "+":
+                    heading -= self.curve.angle
+                case "-":
+                    heading += self.curve.angle
+                case "[":
+                    stack.append((x, y, heading))
+                case "]":
+                    x, y, heading = stack.pop()
+                case _:
+                    pass
+            minx = min(minx, x)
+            miny = min(miny, y)
+            maxx = max(maxx, x)
+            maxy = max(maxy, y)
+
+        rx = (maxx - minx) / 2
+        ry = (maxy - miny) / 2
+        r = max(rx, ry) * 1.1
+
+        cx = (minx + maxx) / 2
+        cy = (miny + maxy) / 2
+        return (cx - r, cy - r, cx + r, cy + r)
 
     def iterate_curve(
         self,
@@ -366,4 +337,4 @@ def test(level: int = 2):
 
 
 if __name__ == "__main__":
-    main()
+    test()
